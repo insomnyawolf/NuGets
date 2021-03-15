@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>insomnyawolf</Authors>
+    <Company />
+    <Description>Simple saucenao.com request api library</Description>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
+
+</Project>
