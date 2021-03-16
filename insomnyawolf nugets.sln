@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SortingAlgorithms", "Sortin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicIrcClient", "IrcClient\BasicIrcClient.csproj", "{B8B5F9B1-D41C-431C-9928-730AFD3311E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoeBooruApi", "MoeBooruAPI\MoeBooruApi.csproj", "{57A8D658-5828-4518-B983-7D602AA826D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{408716EA-6454-4FDD-BE72-34FD781C3A4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{B8B5F9B1-D41C-431C-9928-730AFD3311E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8B5F9B1-D41C-431C-9928-730AFD3311E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8B5F9B1-D41C-431C-9928-730AFD3311E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57A8D658-5828-4518-B983-7D602AA826D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57A8D658-5828-4518-B983-7D602AA826D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57A8D658-5828-4518-B983-7D602AA826D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57A8D658-5828-4518-B983-7D602AA826D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{408716EA-6454-4FDD-BE72-34FD781C3A4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{408716EA-6454-4FDD-BE72-34FD781C3A4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{408716EA-6454-4FDD-BE72-34FD781C3A4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{408716EA-6454-4FDD-BE72-34FD781C3A4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
