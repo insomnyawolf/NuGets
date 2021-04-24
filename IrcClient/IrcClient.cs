@@ -21,10 +21,11 @@ namespace BasicIrcClient
         private readonly ILogger Logger;
         private bool IsListening;
 
-        public delegate Task EventDelegate(Context Context);
-        public EventDelegate OnMessageRecived { get; set; }
-        public EventDelegate OnChannelJoin { get; set; }
-        public EventDelegate OnChannelLeave { get; set; }
+        public delegate Task IrcEvent(Context Context);
+
+        public event IrcEvent OnMessageRecived;
+        public event IrcEvent OnChannelJoin;
+        public event IrcEvent OnChannelLeave;
 
         public IrcClient(IrcClientConfig IrcClientConfig, ILoggerFactory LoggerFactory) : this(IrcClientConfig.Host, IrcClientConfig.Port, IrcClientConfig.UserName, IrcClientConfig.Password, LoggerFactory)
         {
@@ -116,24 +117,15 @@ namespace BasicIrcClient
 
                     if (message.Type == IrcAction.PRIVMSG)
                     {
-                        if (OnMessageRecived != null)
-                        {
-                            await OnMessageRecived.Invoke(context);
-                        }
+                        await OnMessageRecived?.Invoke(context);
                     }
                     else if (message.Type == IrcAction.JOIN)
                     {
-                        if (OnChannelJoin != null)
-                        {
-                            await OnChannelJoin.Invoke(context);
-                        }
+                        await OnChannelJoin?.Invoke(context);
                     }
                     else if (message.Type == IrcAction.PART)
                     {
-                        if (OnChannelLeave != null)
-                        {
-                            await OnChannelLeave.Invoke(context);
-                        }
+                        await OnChannelLeave?.Invoke(context);
                     }
                 }
             }

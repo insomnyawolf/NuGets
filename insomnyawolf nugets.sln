@@ -19,11 +19,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtensionsReflection", "ExtensionsReflection\ExtensionsReflection.csproj", "{3A3969F7-69D8-41C2-AEB1-52CE8B5D0C99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvToObjects", "CsvToObjects\CsvToObjects.csproj", "{D2AD23BC-B3C6-4442-89A2-79EBF74BCD2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvToObjects", "CsvToObjects\CsvToObjects.csproj", "{D2AD23BC-B3C6-4442-89A2-79EBF74BCD2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionsString", "ExtensionsString\ExtensionsString.csproj", "{40DE1385-69F0-46B3-B0BD-EC79D843EDC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtensionsString", "ExtensionsString\ExtensionsString.csproj", "{40DE1385-69F0-46B3-B0BD-EC79D843EDC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorksheetToObjects", "WorksheetToObjects\WorksheetToObjects.csproj", "{E27D133F-0217-4EC8-8C7F-928D6883C931}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorksheetToObjects", "WorksheetToObjects\WorksheetToObjects.csproj", "{E27D133F-0217-4EC8-8C7F-928D6883C931}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureSamlSSO", "AzureSamlSSO\AzureSamlSSO.csproj", "{BD412A02-16D4-4E29-BA8E-CD68347E222A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtHelper", "JwtHelper\JwtHelper.csproj", "{19CA0ACA-4CA0-4EC6-B1C1-14CF9DF00810}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LowLevelHooks", "LowLevelHooks\LowLevelHooks.csproj", "{F1E2999F-A060-4269-B7E0-59016FE1C409}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUI", "TestUI\TestUI.csproj", "{C166C7EF-640C-408C-A9A2-6B142989CE29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +83,22 @@ Global
 		{E27D133F-0217-4EC8-8C7F-928D6883C931}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E27D133F-0217-4EC8-8C7F-928D6883C931}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E27D133F-0217-4EC8-8C7F-928D6883C931}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD412A02-16D4-4E29-BA8E-CD68347E222A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD412A02-16D4-4E29-BA8E-CD68347E222A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD412A02-16D4-4E29-BA8E-CD68347E222A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD412A02-16D4-4E29-BA8E-CD68347E222A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19CA0ACA-4CA0-4EC6-B1C1-14CF9DF00810}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19CA0ACA-4CA0-4EC6-B1C1-14CF9DF00810}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19CA0ACA-4CA0-4EC6-B1C1-14CF9DF00810}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19CA0ACA-4CA0-4EC6-B1C1-14CF9DF00810}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1E2999F-A060-4269-B7E0-59016FE1C409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1E2999F-A060-4269-B7E0-59016FE1C409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1E2999F-A060-4269-B7E0-59016FE1C409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1E2999F-A060-4269-B7E0-59016FE1C409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C166C7EF-640C-408C-A9A2-6B142989CE29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C166C7EF-640C-408C-A9A2-6B142989CE29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C166C7EF-640C-408C-A9A2-6B142989CE29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C166C7EF-640C-408C-A9A2-6B142989CE29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
