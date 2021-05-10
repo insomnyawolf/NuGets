@@ -9,8 +9,22 @@ using System.Text;
 
 namespace CsvToObjects
 {
-    public static class CsvToObjects
+    // Since the code is not as beautiful as i would like, enjoy this ascii art
+    //
+    //                     .
+    //                    / V\
+    //                  / `  /
+    //                 <<   |
+    //                 /    |
+    //               /      |
+    //             /        |
+    //           /    \  \ /
+    //          (      ) | |
+    //  ________|   _/_  | |
+    //<__________\______)\__)
+    public static class CsvTools
     {
+        public static CsvToolsConfig CsvToolsConfig = new();
 
         #region Mensajes
 
@@ -27,17 +41,18 @@ namespace CsvToObjects
         /// <param name="stream">
         /// DataStream wich contains the data that will be parsed
         /// </param>
-        /// <param name="values">WIP</param>
-        /// <param name="splitPattern">
-        /// Charactet that will be used to split each field in the input array
-        /// </param>
-        /// <param name="encodingOrigin">WIP</param>
-        /// <returns></returns>
-        public static bool Deserialize<T>(Stream stream, out List<T> values, char splitPattern = ';', Encoding encodingOrigin = null, string dateFormat = "dd/MM/yyyy") where T : class, new()
+        /// <param name="values">Parsed Values</param>
+        /// <returns>If the conversion was sucesfull or not</returns>
+        public static bool Deserialize<T>(Stream stream, out List<T> values, CsvToolsConfig csvToolsConfig = null) where T : class, new()
         {
             values = new List<T>();
 
-            using var streamReader = encodingOrigin is null ? new StreamReader(stream) : new StreamReader(stream, encodingOrigin);
+            if (csvToolsConfig is null)
+            {
+                csvToolsConfig = CsvToolsConfig;
+            }
+
+            using var streamReader = csvToolsConfig.EncodingOrigin is null ? new StreamReader(stream) : new StreamReader(stream, csvToolsConfig.EncodingOrigin);
             string data = streamReader.ReadToEnd();
 
             Type currentType = typeof(T);
@@ -52,28 +67,28 @@ namespace CsvToObjects
             CsvIgnoreTopAttribute customAttribute = currentType.GetCustomAttribute<CsvIgnoreTopAttribute>();
 
             using var stringReader = new StringReader(data);
-            
-                while ((line = stringReader.ReadLine()) != null)
+
+            while ((line = stringReader.ReadLine()) != null)
+            {
+                lineCount++;
+                string[] lineFields = line.Split(new char[] { csvToolsConfig.SplitPattern }, StringSplitOptions.None);
+                if (customAttribute == null || customAttribute.IgnoreTop < lineCount)
                 {
-                    lineCount++;
-                    string[] lineFields = line.Split(new char[] { splitPattern }, StringSplitOptions.None);
-                    if (customAttribute == null || customAttribute.IgnoreTop < lineCount)
+                    if (IsFirst)
                     {
-                        if (IsFirst)
+                        IsFirst = false;
+                        fields = lineFields;
+                        if (!IsValidateCsv(properties, fields))
                         {
-                            IsFirst = false;
-                            fields = lineFields;
-                            if (!IsValidateCsv(properties, fields))
-                            {
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            values.Add(DeserializeObj<T>(lineFields, fields, currentType, properties, dateFormat));
+                            return false;
                         }
                     }
+                    else
+                    {
+                        values.Add(DeserializeObj<T>(lineFields, fields, currentType, properties, csvToolsConfig.TypeConversionConfig));
+                    }
                 }
+            }
             return true;
         }
 
@@ -97,12 +112,8 @@ namespace CsvToObjects
         /// Deserialized x1 register into an object
         /// </summary>
         /// <typeparam name="T">Desired Object Output</typeparam>
-        /// <param name="fieldData">Current data</param>
-        /// <param name="fields">Column Name</param>
-        /// <param name="currentType">currentType</param>
-        /// <param name="Properties">Properties</param>
-        /// <returns></returns>
-        private static T DeserializeObj<T>(string[] fieldData, string[] fields, Type currentType, PropertyInfo[] Properties, string dateFormat)
+        /// <returns>deserialized object</returns>
+        private static T DeserializeObj<T>(string[] fieldData, string[] fields, Type currentType, PropertyInfo[] Properties, TypeConversionConfig typeConversionConfig)
         {
             var obj = FormatterServices.GetSafeUninitializedObject(currentType);
             MemberInfo[] members = FormatterServices.GetSerializableMembers(currentType);
@@ -121,7 +132,7 @@ namespace CsvToObjects
                     {
                         if (i < fieldData.Length && name == fields[i])
                         {
-                            Properties[index].SetValue(obj, propType.ConvertToCompatibleType(fieldData[i]));
+                            Properties[index].SetValue(obj, propType.ConvertToCompatibleType(fieldData[i], typeConversionConfig));
                         }
                     }
                 }
@@ -131,10 +142,17 @@ namespace CsvToObjects
 
         private const char LineBreak = '\n';
 
-        public static string Serialize<T>(IList<T> data, char splitPattern = ';', string dateFormat = "dd/MM/yyyy") where T : class
+        public static string Serialize<T>(IList<T> data, CsvToolsConfig csvToolsConfig = null) where T : class
         {
-            if (data == null)
+            if (data is null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
+
+            if (csvToolsConfig is null)
+            {
+                csvToolsConfig = CsvToolsConfig;
+            }
 
             Type currentType = typeof(T);
             PropertyInfo[] Properties = currentType.GetProperties();
@@ -161,7 +179,7 @@ namespace CsvToObjects
                     CsvBuilder.Append(fieldName);
 
                     if (IndexToStopSplit > prop)
-                        CsvBuilder.Append(splitPattern);
+                        CsvBuilder.Append(csvToolsConfig.SplitPattern);
                 }
             }
 
@@ -185,7 +203,11 @@ namespace CsvToObjects
 #warning OPTIMIZE THIS
                         else if (value.GetType() == typeof(DateTime) || value.GetType() == typeof(DateTime?))
                         {
-                            CsvBuilder.Append(((DateTime)value).ToString(dateFormat));
+                            CsvBuilder.Append(((DateTime)value).ToString(csvToolsConfig.TypeConversionConfig.DateTimeFormat));
+                        }
+                        else if (value.GetType() == typeof(TimeSpan) || value.GetType() == typeof(TimeSpan?))
+                        {
+                            CsvBuilder.Append(((TimeSpan)value).ToString(csvToolsConfig.TypeConversionConfig.TimeSpanFormat));
                         }
                         else
                         {
@@ -193,7 +215,7 @@ namespace CsvToObjects
                         }
 
                         if (IndexToStopSplit > prop)
-                            CsvBuilder.Append(splitPattern);
+                            CsvBuilder.Append(csvToolsConfig.SplitPattern);
                     }
                 }
                 CsvBuilder.Append(LineBreak);

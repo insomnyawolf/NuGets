@@ -2,7 +2,7 @@
 namespace CsvToObjects
 {
     /// <summary>
-    /// Used to binda column drom the original csv into the target object
+    /// Used to bind a column drom the original csv into the target object
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class CsvNameAttribute : Attribute
