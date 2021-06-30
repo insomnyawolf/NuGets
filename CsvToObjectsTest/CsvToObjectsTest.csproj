@@ -17,9 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestFiles\Data7602DescendingYearOrder.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Folder Include="TestFiles\" />
   </ItemGroup>
 
 </Project>
