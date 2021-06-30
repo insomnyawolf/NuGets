@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExtensionsReflection\ExtensionsReflection.csproj" />
+    <ProjectReference Include="..\ExtensionsReflection\ReflectionExtensions.csproj" />
   </ItemGroup>
 
 </Project>

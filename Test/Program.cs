@@ -1,5 +1,5 @@
 ﻿using CsvToObjects;
-using ExtensionsReflection;
+using ReflectionExtensions;
 using MoeBooruApi;
 using System;
 using System.Collections;
@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Test
@@ -35,37 +37,52 @@ namespace Test
             //var type = typeof(bool?);
 
             //object p = type.ConvertToCompatibleType("test");
-            var file = File.OpenRead(@"C:\Users\iw\Desktop\Temp\report.csv");
 
-            var config = new CsvToolsConfig()
+            var listUsuarios = new List<Usuario>()
             {
-                SplitPattern = ',',
-                TypeConversionConfig = new TypeConversionConfig()
+                new Usuario()
                 {
-                    AcceptLossyConversion = false,
-                    DateTimeFormat = "dd/MM/yyyy HH:mm:ss",
-                    TimeSpanFormat = "c",
-                }
+                    NombrePeroRaroParaEnseñarElEjemplo = "Pepito",
+                    Edad = 18,
+                    DatoInutil = "asdasdasd"
+                },
+                new Usuario()
+                {
+                    NombrePeroRaroParaEnseñarElEjemplo = "Juan",
+                    Edad = 20,
+                    DatoInutil = "fwefwefwef"
+                },
             };
 
-            var sucess = CsvTools.Deserialize<ScoreEntry>(file, out var processed, config);
-            if (!sucess)
+            Migrate(listUsuarios, item => new MigrateQuery()
             {
-                Console.WriteLine("Something Failed");
-            }
-
-            var serialized = CsvTools.Serialize(processed, config);
-
-            Console.WriteLine(serialized);
+                UserName = item.NombrePeroRaroParaEnseñarElEjemplo,
+                Edad = item.Edad,
+            });
         }
 
-        [Serializable]
-        public class ScoreEntry
+        public static void Migrate<T>(List<T> usuarios, Func<T, MigrateQuery> mapeo)
         {
-            [CsvName("Score")]
-            public int Score { get; set; }
-            [CsvName("time stamp")]
-            public DateTime Timestamp { get; set; }
+            foreach (var item in usuarios)
+            {
+                var usuarioMigracion = mapeo(item);
+
+                Console.WriteLine($"Migrado correctamente el usuario {usuarioMigracion.UserName} {usuarioMigracion.Edad}");
+            }
+
+        }
+
+        public class Usuario
+        {
+            public string NombrePeroRaroParaEnseñarElEjemplo { get; set; }
+            public int Edad { get; set; }
+            public string DatoInutil { get; set; }
+        }
+
+        public class MigrateQuery
+        {
+            public string UserName { get; set; }
+            public int Edad { get; set; }
         }
     }
 }

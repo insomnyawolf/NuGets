@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CsvToObjects\CsvToObjects.csproj" />
-    <ProjectReference Include="..\ExtensionsReflection\ExtensionsReflection.csproj" />
+    <ProjectReference Include="..\ExtensionsReflection\ReflectionExtensions.csproj" />
     <ProjectReference Include="..\MoeBooruAPI\MoeBooruApi.csproj" />
   </ItemGroup>
 

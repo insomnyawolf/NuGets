@@ -1,4 +1,4 @@
-﻿using ExtensionsReflection;
+﻿using ReflectionExtensions;
 using System.Text;
 
 namespace CsvToObjects
@@ -10,6 +10,6 @@ namespace CsvToObjects
         /// </summary>
         public char SplitPattern { get; set; } = ';';
         public Encoding EncodingOrigin { get; set; } = null;
-        public TypeConversionConfig TypeConversionConfig { get; set; } = new();
+        public TypeConversionConfig TypeConversionConfig { get; set; } = new TypeConversionConfig();
     }
 }

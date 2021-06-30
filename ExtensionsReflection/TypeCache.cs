@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ExtensionsReflection
+namespace ReflectionExtensions
 {
-    public static partial class ExtensionsReflection
+    public static partial class ReflectionExtensions
     {
         internal static readonly Type TypeInt = typeof(int);
         internal static readonly Type TypeFloat = typeof(float);

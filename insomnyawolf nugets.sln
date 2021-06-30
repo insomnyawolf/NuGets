@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31025.218
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaucenaoApi", "SaucenaoApi\SaucenaoApi.csproj", "{CDB2E46A-DB11-4622-8668-A3655634DCCE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RunicCypher", "RunicCypher\RunicCypher.csproj", "{F6A9B9BD-36EE-4EBC-99B1-80A9EF7CD66C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleBruteForce", "SimpleBruteForce\SimpleBruteForce.csproj", "{88DD7822-E755-4B44-827C-DC39CC66CCDB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SortingAlgorithms", "SortingAlgorithms\SortingAlgorithms.csproj", "{3BF2B648-EEDD-4F5F-8CE9-517137FB471D}"
@@ -17,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoeBooruApi", "MoeBooruAPI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{408716EA-6454-4FDD-BE72-34FD781C3A4B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtensionsReflection", "ExtensionsReflection\ExtensionsReflection.csproj", "{3A3969F7-69D8-41C2-AEB1-52CE8B5D0C99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReflectionExtensions", "ExtensionsReflection\ReflectionExtensions.csproj", "{3A3969F7-69D8-41C2-AEB1-52CE8B5D0C99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvToObjects", "CsvToObjects\CsvToObjects.csproj", "{D2AD23BC-B3C6-4442-89A2-79EBF74BCD2A}"
 EndProject
@@ -29,9 +27,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureSamlSSO", "AzureSamlSS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtHelper", "JwtHelper\JwtHelper.csproj", "{19CA0ACA-4CA0-4EC6-B1C1-14CF9DF00810}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LowLevelHooks", "LowLevelHooks\LowLevelHooks.csproj", "{F1E2999F-A060-4269-B7E0-59016FE1C409}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LowLevelHooks", "LowLevelHooks\LowLevelHooks.csproj", "{F1E2999F-A060-4269-B7E0-59016FE1C409}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUI", "TestUI\TestUI.csproj", "{C166C7EF-640C-408C-A9A2-6B142989CE29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUI", "TestUI\TestUI.csproj", "{C166C7EF-640C-408C-A9A2-6B142989CE29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvToObjectsTest", "CsvToObjectsTest\CsvToObjectsTest.csproj", "{29F59FC3-9A20-4E57-A3B0-5CAB82969CE7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayeredStorageNoAlloc", "LayeredStorageNoAlloc\LayeredStorageNoAlloc.csproj", "{55E10904-2F12-4B0C-929B-EE29D1228F82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CipherHelpers", "CipherHelpers\CipherHelpers.csproj", "{CA5A0A8D-03FC-41A1-B6E2-054AD20332B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CipherHelpersTest", "CipherHelpersTest\CipherHelpersTest.csproj", "{66766D02-B55E-4D25-854D-E6A1DC26927E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +49,6 @@ Global
 		{CDB2E46A-DB11-4622-8668-A3655634DCCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDB2E46A-DB11-4622-8668-A3655634DCCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDB2E46A-DB11-4622-8668-A3655634DCCE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6A9B9BD-36EE-4EBC-99B1-80A9EF7CD66C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6A9B9BD-36EE-4EBC-99B1-80A9EF7CD66C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6A9B9BD-36EE-4EBC-99B1-80A9EF7CD66C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6A9B9BD-36EE-4EBC-99B1-80A9EF7CD66C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{88DD7822-E755-4B44-827C-DC39CC66CCDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{88DD7822-E755-4B44-827C-DC39CC66CCDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88DD7822-E755-4B44-827C-DC39CC66CCDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -99,6 +101,22 @@ Global
 		{C166C7EF-640C-408C-A9A2-6B142989CE29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C166C7EF-640C-408C-A9A2-6B142989CE29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C166C7EF-640C-408C-A9A2-6B142989CE29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29F59FC3-9A20-4E57-A3B0-5CAB82969CE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29F59FC3-9A20-4E57-A3B0-5CAB82969CE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29F59FC3-9A20-4E57-A3B0-5CAB82969CE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29F59FC3-9A20-4E57-A3B0-5CAB82969CE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55E10904-2F12-4B0C-929B-EE29D1228F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55E10904-2F12-4B0C-929B-EE29D1228F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55E10904-2F12-4B0C-929B-EE29D1228F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55E10904-2F12-4B0C-929B-EE29D1228F82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA5A0A8D-03FC-41A1-B6E2-054AD20332B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA5A0A8D-03FC-41A1-B6E2-054AD20332B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA5A0A8D-03FC-41A1-B6E2-054AD20332B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA5A0A8D-03FC-41A1-B6E2-054AD20332B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66766D02-B55E-4D25-854D-E6A1DC26927E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66766D02-B55E-4D25-854D-E6A1DC26927E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66766D02-B55E-4D25-854D-E6A1DC26927E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66766D02-B55E-4D25-854D-E6A1DC26927E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

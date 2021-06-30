@@ -1,4 +1,4 @@
-﻿using ExtensionsReflection;
+using ReflectionExtensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,7 +24,7 @@ namespace CsvToObjects
     //<__________\______)\__)
     public static class CsvTools
     {
-        public static CsvToolsConfig CsvToolsConfig = new();
+        public static CsvToolsConfig CsvToolsConfig = new CsvToolsConfig();
 
         #region Mensajes
 
@@ -52,40 +52,43 @@ namespace CsvToObjects
                 csvToolsConfig = CsvToolsConfig;
             }
 
-            using var streamReader = csvToolsConfig.EncodingOrigin is null ? new StreamReader(stream) : new StreamReader(stream, csvToolsConfig.EncodingOrigin);
-            string data = streamReader.ReadToEnd();
-
-            Type currentType = typeof(T);
-            PropertyInfo[] properties = currentType.GetProperties();
-
-            string line;
-            int lineCount = 0;
-
-            string[] fields = Array.Empty<string>();
-            bool IsFirst = true;
-
-            CsvIgnoreTopAttribute customAttribute = currentType.GetCustomAttribute<CsvIgnoreTopAttribute>();
-
-            using var stringReader = new StringReader(data);
-
-            while ((line = stringReader.ReadLine()) != null)
+            using (var streamReader = csvToolsConfig.EncodingOrigin is null ? new StreamReader(stream) : new StreamReader(stream, csvToolsConfig.EncodingOrigin))
             {
-                lineCount++;
-                string[] lineFields = line.Split(new char[] { csvToolsConfig.SplitPattern }, StringSplitOptions.None);
-                if (customAttribute == null || customAttribute.IgnoreTop < lineCount)
+                string data = streamReader.ReadToEnd();
+
+                Type currentType = typeof(T);
+                PropertyInfo[] properties = currentType.GetProperties();
+
+                string line;
+                int lineCount = 0;
+
+                string[] fields = Array.Empty<string>();
+                bool IsFirst = true;
+
+                CsvIgnoreTopAttribute customAttribute = currentType.GetCustomAttribute<CsvIgnoreTopAttribute>();
+
+                using (var stringReader = new StringReader(data))
                 {
-                    if (IsFirst)
+                    while ((line = stringReader.ReadLine()) != null)
                     {
-                        IsFirst = false;
-                        fields = lineFields;
-                        if (!IsValidateCsv(properties, fields))
+                        lineCount++;
+                        string[] lineFields = line.Split(new char[] { csvToolsConfig.SplitPattern }, StringSplitOptions.None);
+                        if (customAttribute == null || customAttribute.IgnoreTop < lineCount)
                         {
-                            return false;
+                            if (IsFirst)
+                            {
+                                IsFirst = false;
+                                fields = lineFields;
+                                if (!IsValidateCsv(properties, fields))
+                                {
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                values.Add(DeserializeObj<T>(lineFields, fields, currentType, properties, csvToolsConfig.TypeConversionConfig));
+                            }
                         }
-                    }
-                    else
-                    {
-                        values.Add(DeserializeObj<T>(lineFields, fields, currentType, properties, csvToolsConfig.TypeConversionConfig));
                     }
                 }
             }

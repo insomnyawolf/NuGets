@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace ExtensionsReflection
+namespace ReflectionExtensions
 {
     // Since the code is not as beautiful as i would like, enjoy this ascii art
     //
@@ -18,9 +18,9 @@ namespace ExtensionsReflection
     //          (      ) | |
     //  ________|   _/_  | |
     //<__________\______)\__)
-    public static partial class ExtensionsReflection
+    public static partial class ReflectionExtensions
     {
-        public static TypeConversionConfig TypeConversionConfig = new();
+        public static TypeConversionConfig TypeConversionConfig = new TypeConversionConfig();
         /// <summary>
         /// Reflection Invoke Parameter Helper
         /// </summary>
