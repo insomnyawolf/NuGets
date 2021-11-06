@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace InMemoryDatabase
 {
@@ -63,7 +64,7 @@ namespace InMemoryDatabase
             for (int i = 0; i < Data.Count; i++)
             {
                 var currentData = Data[i];
-                if (filter(currentData.Data))
+                if (filter(currentData.Value))
                 {
                     currentData.Marked = true;
                     rowsAffected++;
@@ -81,7 +82,7 @@ namespace InMemoryDatabase
                 if (currentData.Marked)
                 {
                     currentData.Marked = false;
-                    span[currentIndex] = currentData.Data;
+                    span[currentIndex] = currentData.Value;
                     currentIndex++;
                 }
             }
@@ -98,7 +99,7 @@ namespace InMemoryDatabase
 
             Data.Add(new DatabaseEntry<T>()
             {
-                Data = item
+                Value = item
             });
         }
 
@@ -118,9 +119,9 @@ namespace InMemoryDatabase
             for (int i = 0; i < Data.Count; i++)
             {
                 var currentData = Data[i];
-                if (filter(currentData.Data))
+                if (filter(currentData.Value))
                 {
-                    updateAction(currentData.Data);
+                    updateAction(currentData.Value);
                     rowsAffected++;
                 }
             }
@@ -135,9 +136,9 @@ namespace InMemoryDatabase
             for (int i = 0; i < Data.Count; i++)
             {
                 var currentData = Data[i];
-                if (filter(currentData.Data))
+                if (filter(currentData.Value))
                 {
-                    currentData.Data = updateAction(currentData.Data);
+                    currentData.Value = updateAction(currentData.Value);
                     rowsAffected++;
                 }
             }
@@ -148,36 +149,17 @@ namespace InMemoryDatabase
         public int DeleteWhere(Func<T, bool> filter)
         {
             var rowsAffected = 0;
-            for (int i = 0; i < Data.Count; i++)
+
+            var index = Data.Count;
+
+            while (Data.Count > 0)
             {
-                var currentData = Data[i];
-                if (filter(currentData.Data))
+                index--;
+                var currentData = Data[index];
+                if (filter(currentData.Value))
                 {
-                    currentData.Marked = true;
+                    Data.RemoveAt(index);
                     rowsAffected++;
-                }
-            }
-
-            using (var memoryOwner = DatabaseEntryPool.Rent(rowsAffected))
-            {
-                var span = memoryOwner.Memory.Span;
-
-                var correntIndex = 0;
-
-                for (int i = 0; i < Data.Count; i++)
-                {
-                    var currentData = Data[i];
-                    if (currentData.Marked)
-                    {
-                        currentData.Marked = false;
-                        span[correntIndex] = currentData;
-                        correntIndex++;
-                    }
-                }
-
-                for (int i = 0; i < rowsAffected; i++)
-                {
-                    Data.Remove(span[i]);
                 }
             }
 
@@ -196,6 +178,7 @@ namespace InMemoryDatabase
 
             PersistanceFile?.SetLength(0);
             Export(PersistanceStream);
+            PersistanceStream.Flush();
         }
 
         public void Load()
@@ -219,14 +202,32 @@ namespace InMemoryDatabase
 
         public void Import(Stream stream)
         {
-            Data = JsonSerializer.Deserialize<List<DatabaseEntry<T>>>(stream);
+            Data = JsonSerializer.Deserialize<List<DatabaseEntry<object>>>(stream) as List<DatabaseEntry<T>>;
         }
     }
     #endregion Persistance
 
+    [JsonConverter(typeof(DatabaseEntryJsonConverter))]
     internal class DatabaseEntry<T>
     {
-        public T? Data { get; set; }
+        public T? Value { get; set; }
+        [JsonIgnore]
         public bool Marked { get; set; }
+    }
+
+    internal class DatabaseEntryJsonConverter : JsonConverter<DatabaseEntry<object>>
+    {
+        public override DatabaseEntry<object>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return new DatabaseEntry<object>()
+            {
+                Value = JsonSerializer.Deserialize<object>(ref reader)
+            };
+        }
+
+        public override void Write(Utf8JsonWriter writer, DatabaseEntry<object> value, JsonSerializerOptions options)
+        {
+            JsonSerializer.Serialize(writer, ((dynamic)value).Value);
+        }
     }
 }

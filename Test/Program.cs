@@ -1,4 +1,4 @@
-﻿//#define LoadNewData
+﻿#define LoadNewData
 using CsvToObjects;
 using ReflectionExtensions;
 using MoeBooruApi;
@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MathHelpers;
 using InMemoryDatabase;
+using System.Globalization;
 
 namespace Test
 {
@@ -69,6 +70,13 @@ namespace Test
         static async Task Main(string[] args)
         {
 #if LoadNewData
+
+            var culture = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
+            culture.NumberFormat = new System.Globalization.NumberFormatInfo()
+            {
+                CurrencyDecimalSeparator = ".",
+
+            };
             var CsvConfig = new CsvToolsConfig()
             {
                 SplitPattern = ',',
@@ -78,14 +86,14 @@ namespace Test
                     AcceptLossyConversion = false,
                     DateTimeFormat = "M/d/yyyy",
                     TimeSpanFormat = "c",
-                    CultureInfo = Thread.CurrentThread.CurrentCulture,
+                    CultureInfo = culture,
                     NumberStyles = System.Globalization.NumberStyles.Any,
                     DateTimeStyles = System.Globalization.DateTimeStyles.AllowWhiteSpaces,
                     TimeSpanStyles = System.Globalization.TimeSpanStyles.None
                 },
             };
 
-            var sucess = CsvTools.Deserialize<DataStructure>(File.OpenRead(@"C:\Users\iw\Downloads\TestCsv\5m Sales Records.csv"), out var processed, CsvConfig);
+            var sucess = CsvTools.Deserialize<DataStructure>(File.OpenRead(@"C:\Users\iw\Downloads\TestCsv\100 Sales Records.csv"), out var processed, CsvConfig);
             if (!sucess)
             {
                 Console.WriteLine("Something Failed");
@@ -107,7 +115,13 @@ namespace Test
                 item.Country == "Belgium"
                 );
 
-            //test.Save();
+            test.Save();
+
+            var items = test.Find(item => true);
+
+            test.DeleteWhere(item => true);
+
+            var items2 = test.Find(item => true);
 
             Console.WriteLine("");
 
