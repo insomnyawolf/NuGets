@@ -1,4 +1,4 @@
-﻿#define LoadNewData
+﻿//#define LoadNewData
 using CsvToObjects;
 using ReflectionExtensions;
 using MoeBooruApi;
@@ -17,55 +17,55 @@ using System.Globalization;
 
 namespace Test
 {
+    // Region,Country,Item Type,Sales Channel,Order Priority,Order Date,Order ID,Ship Date,Units Sold,Unit Price,Unit Cost,Total Revenue,Total Cost,Total Profit
+    [Serializable]
+    public class DataStructure
+    {
+        [CsvName("Region")]
+        public string Region { get; set; }
+
+        [CsvName("Country")]
+        public string Country { get; set; }
+
+        [CsvName("Item Type")]
+        public string ItemType { get; set; }
+
+        [CsvName("Sales Channel")]
+        public string SalesChannel { get; set; }
+
+        [CsvName("Order Priority")]
+        public string OrderPriority { get; set; }
+
+        [CsvName("Order Date")]
+        public DateTime OrderDate { get; set; }
+
+        [CsvName("Order ID")]
+        public ulong OrderID { get; set; }
+
+        [CsvName("Ship Date")]
+        public DateTime ShipDate { get; set; }
+
+        [CsvName("Units Sold")]
+        public ulong UnitsSold { get; set; }
+
+        [CsvName("Unit Price")]
+        public decimal UnitPrice { get; set; }
+
+        [CsvName("Unit Cost")]
+        public decimal UnitCost { get; set; }
+
+        [CsvName("Total Revenue")]
+        public decimal TotalRevenue { get; set; }
+
+        [CsvName("Total Cost")]
+        public decimal TotalCost { get; set; }
+
+        [CsvName("Total Profit")]
+        public decimal TotalProfit { get; set; }
+    }
     public static class Program
     {
-        // Region,Country,Item Type,Sales Channel,Order Priority,Order Date,Order ID,Ship Date,Units Sold,Unit Price,Unit Cost,Total Revenue,Total Cost,Total Profit
-        [Serializable]
-        class DataStructure
-        {
-            [CsvName("Region")]
-            public string Region { get; set; }
 
-            [CsvName("Country")]
-            public string Country { get; set; }
-
-            [CsvName("Item Type")]
-            public string ItemType { get; set; }
-
-            [CsvName("Sales Channel")]
-            public string SalesChannel { get; set; }
-
-            [CsvName("Order Priority")]
-            public string OrderPriority { get; set; }
-
-            [CsvName("Order Date")]
-            public DateTime OrderDate { get; set; }
-
-            [CsvName("Order ID")]
-
-            public ulong OrderID { get; set; }
-
-            [CsvName("Ship Date")]
-            public DateTime ShipDate { get; set; }
-
-            [CsvName("Units Sold")]
-            public ulong UnitsSold { get; set; }
-
-            [CsvName("Unit Price")]
-            public decimal UnitPrice { get; set; }
-
-            [CsvName("Unit Cost")]
-            public decimal UnitCost { get; set; }
-
-            [CsvName("Total Revenue")]
-            public decimal TotalRevenue { get; set; }
-
-            [CsvName("Total Cost")]
-            public decimal TotalCost { get; set; }
-
-            [CsvName("Total Profit")]
-            public decimal TotalProfit { get; set; }
-        }
 
         static async Task Main(string[] args)
         {
@@ -93,24 +93,24 @@ namespace Test
                 },
             };
 
-            var sucess = CsvTools.Deserialize<DataStructure>(File.OpenRead(@"C:\Users\iw\Downloads\TestCsv\100 Sales Records.csv"), out var processed, CsvConfig);
+            var sucess = CsvTools.Deserialize<DataStructure>(File.OpenRead(@"C:\Users\iw\Downloads\TestCsv\5m Sales Records.csv"), out var processed, CsvConfig);
             if (!sucess)
             {
                 Console.WriteLine("Something Failed");
             }
 #endif
 
-            var test = new InMemoryDatabase<DataStructure>(@"C:\Users\iw\Downloads\TestCsv\DatabaseTest.json");
+            var test = new InMemoryDatabase<DataStructure>(@"C:\Users\iw\Downloads\TestCsv\DatabaseTest.gz");
 
 #if LoadNewData
             test.Add(processed);
 #endif
 
-            var frutas = test.Find(item => 
-                item.OrderPriority == "C" && 
-                item.ItemType == "Fruits" && 
-                item.SalesChannel == "Offline" && 
-                item.Region == "Europe" && 
+            var frutas = test.Find(item =>
+                item.OrderPriority == "C" &&
+                item.ItemType == "Fruits" &&
+                item.SalesChannel == "Offline" &&
+                item.Region == "Europe" &&
                 item.UnitsSold > 2317 &&
                 item.Country == "Belgium"
                 );
@@ -120,6 +120,11 @@ namespace Test
             var items = test.Find(item => true);
 
             test.DeleteWhere(item => true);
+
+            test.UpdateWhere(filter: item => item.Country == "España", updateAction: update =>
+            {
+                update.Country = "Patata";
+            });
 
             var items2 = test.Find(item => true);
 
@@ -190,7 +195,6 @@ namespace Test
 
                 Console.WriteLine($"Migrado correctamente el usuario {usuarioMigracion.UserName} {usuarioMigracion.Edad}");
             }
-
         }
 
         public class Usuario

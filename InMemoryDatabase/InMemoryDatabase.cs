@@ -1,11 +1,12 @@
 ﻿using System.Buffers;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace InMemoryDatabase
 {
-#warning RHIS PROBABLY ISN'T THREAD SAFE YET
-    public class InMemoryDatabase<T>
+#warning THIS PROBABLY ISN'T THREAD SAFE YET
+    public class InMemoryDatabase<T> where T : class
     {
         private readonly MemoryPool<DatabaseEntry<T>> DatabaseEntryPool = MemoryPool<DatabaseEntry<T>>.Shared;
         private readonly MemoryPool<T> ResultPool = MemoryPool<T>.Shared;
@@ -13,12 +14,28 @@ namespace InMemoryDatabase
         private List<DatabaseEntry<T>> Data;
 
         private Stream? PersistanceStream;
-        private FileStream? PersistanceFile;
+        private readonly FileStream? PersistanceFileStream;
+
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            Encoder = JavaScriptEncoder.Default,
+        };
 
         public InMemoryDatabase(string path) : this()
         {
-            this.PersistanceFile = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
-            Init(PersistanceStream: PersistanceFile);
+            var FileStreamOptions = new FileStreamOptions
+            {
+                Access = FileAccess.ReadWrite,
+                Mode = FileMode.OpenOrCreate,
+                Share = FileShare.Read,
+                Options = FileOptions.SequentialScan | FileOptions.WriteThrough,
+                BufferSize = 4096,
+            };
+
+            PersistanceFileStream = File.Open(path, FileStreamOptions);
+            Init(PersistanceStream: PersistanceFileStream);
         }
 
         public InMemoryDatabase(Stream? PersistanceStream)
@@ -38,15 +55,7 @@ namespace InMemoryDatabase
             if (PersistanceStream is not null)
             {
                 // Only try to load if there's a plate to load from
-                try
-                {
-                    Load();
-                }
-                catch (JsonException ex)
-                {
-                    // Ignore errors if nothing could be loaded during database creation
-
-                }
+                Load();
             }
 
             if (Data is null)
@@ -175,9 +184,8 @@ namespace InMemoryDatabase
             {
                 throw new ArgumentNullException(nameof(PersistanceStream));
             }
-
-            PersistanceFile?.SetLength(0);
-            Export(PersistanceStream);
+            PersistanceFileStream?.SetLength(0);
+            Export(PersistanceFileStream);
             PersistanceStream.Flush();
         }
 
@@ -187,47 +195,37 @@ namespace InMemoryDatabase
             {
                 throw new ArgumentNullException(nameof(PersistanceStream));
             }
-            Import(PersistanceStream);
-        }
 
+            if (PersistanceFileStream.Length > 0)
+            {
+                Import(PersistanceStream);
+            }
+        }
+#warning PAIN
+
+        // This could be better and don't have bullshit in between but im tired
+        // Either i have good performance and bullshit
+        // Or the data clean but a shitty performance that takes years to do anything 
+        // Trying to optimize this i've learnt protobufs deprecated shit binary formatter and others wich DIDN'T WORK EITHER
+        // At this point i'd rather write everything by hand...
+        // Computers were a mistake
+        // 
+        //
+        // Total Hours Spent: 22
         public void Export(Stream stream)
         {
-            JsonSerializer.Serialize(stream, Data);
+            JsonSerializer.Serialize(stream, Data, JsonSerializerOptions);
         }
 
         public string Export()
         {
-            return JsonSerializer.Serialize(Data);
+            return JsonSerializer.Serialize(Data, JsonSerializerOptions);
         }
 
         public void Import(Stream stream)
         {
-            Data = JsonSerializer.Deserialize<List<DatabaseEntry<object>>>(stream) as List<DatabaseEntry<T>>;
+            Data = JsonSerializer.Deserialize<List<DatabaseEntry<T>>>(stream, JsonSerializerOptions);
         }
     }
     #endregion Persistance
-
-    [JsonConverter(typeof(DatabaseEntryJsonConverter))]
-    internal class DatabaseEntry<T>
-    {
-        public T? Value { get; set; }
-        [JsonIgnore]
-        public bool Marked { get; set; }
-    }
-
-    internal class DatabaseEntryJsonConverter : JsonConverter<DatabaseEntry<object>>
-    {
-        public override DatabaseEntry<object>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            return new DatabaseEntry<object>()
-            {
-                Value = JsonSerializer.Deserialize<object>(ref reader)
-            };
-        }
-
-        public override void Write(Utf8JsonWriter writer, DatabaseEntry<object> value, JsonSerializerOptions options)
-        {
-            JsonSerializer.Serialize(writer, ((dynamic)value).Value);
-        }
-    }
 }
