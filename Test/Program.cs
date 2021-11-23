@@ -115,7 +115,7 @@ namespace Test
                 item.Country == "Belgium"
                 );
 
-            test.Save();
+            //test.Save();
 
             var items = test.Find(item => true);
 
