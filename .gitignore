@@ -353,4 +353,4 @@ MigrationBackup/
 .ionide/
 
 # Built Packages Folder
-Output/
+NugetBuilds/
