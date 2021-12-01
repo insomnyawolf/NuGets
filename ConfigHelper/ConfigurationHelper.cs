@@ -12,6 +12,8 @@ namespace ConfigHelper
         private readonly string ConfigDirectory;
         private FileSystemWatcher watcher;
 
+        private readonly FileStream FileStream;
+
         static SemaphoreSlim Semaphore = new(1);
 
         private ILogger<ConfigurationHelper<T>> Logger;
@@ -29,6 +31,8 @@ namespace ConfigHelper
 
             ConfigFullPath = Path.GetFullPath(ConfigPath);
             ConfigDirectory = Path.GetDirectoryName(ConfigPath);
+
+            FileStream = File.Open(ConfigFullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
 
             Logger?.LogInformation($"The config file will be => {ConfigFullPath}");
 
@@ -63,13 +67,12 @@ namespace ConfigHelper
             {
                 Logger.LogCritical("Error Detecting Config Changes", e.ToString());
             };
-            
+
             watcher.EnableRaisingEvents = true;
         }
 
         private void ChangeDetected(object source, FileSystemEventArgs e)
         {
-#warning Maybe use a sleep there to let the program that modified the file close it's handle
             Load();
         }
 
@@ -82,11 +85,8 @@ namespace ConfigHelper
 
             Semaphore.Wait();
 
-            using (var fs = File.Open(ConfigFullPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                Config = JsonSerializer.Deserialize<T>(fs);
-                fs.Close();
-            }
+            FileStream.Position = 0;
+            Config = JsonSerializer.Deserialize<T>(FileStream);
 
             Semaphore.Release();
 
@@ -107,18 +107,14 @@ namespace ConfigHelper
 
             Semaphore.Wait();
 
-            using (var fs = File.Open(ConfigFullPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
-            {
-                JsonSerializer.Serialize(fs, Config);
-                fs.Flush();
-                fs.SetLength(fs.Position);
-                fs.Close();
-            }
+            FileStream.Position = 0;
+            JsonSerializer.Serialize(FileStream, Config);
+            FileStream.Flush();
+            FileStream.SetLength(FileStream.Position);
 
             Semaphore.Release();
 
             Logger?.LogInformation("Configuration Written");
-
         }
 
         public void OverwriteCurrent(T newSettings = null)
