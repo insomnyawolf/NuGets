@@ -1,0 +1,12 @@
+{
+  "username": "insomnyawolf",
+  "useremail": "insomnyawolf@gmail.com",
+  "sources": [
+    {
+      "name": "feed",
+      "type": "local",
+      "path": "./feed",
+      "baseURI": "https://insomnyawolf.github.io/NuGets/feed/"
+    }
+  ]
+}
