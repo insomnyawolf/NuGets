@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InMemoryDatabase", "InMemor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdpServer", "UdpServer\UdpServer.csproj", "{CED00BD1-71C6-4911-931E-AABC9EFD7F27}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigHelper", "ConfigHelper\ConfigHelper.csproj", "{2B547001-0913-4A56-9076-5FAE3FC446BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,10 @@ Global
 		{CED00BD1-71C6-4911-931E-AABC9EFD7F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CED00BD1-71C6-4911-931E-AABC9EFD7F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CED00BD1-71C6-4911-931E-AABC9EFD7F27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B547001-0913-4A56-9076-5FAE3FC446BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B547001-0913-4A56-9076-5FAE3FC446BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B547001-0913-4A56-9076-5FAE3FC446BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B547001-0913-4A56-9076-5FAE3FC446BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
