@@ -11,8 +11,9 @@
   <div id="content"></div>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    var content = document.getElementById('content');
-    var xmlhttp = new XMLHttpRequest();
+    function doWork() {
+      var content = document.getElementById('content');
+      var xmlhttp = new XMLHttpRequest();
       xmlhttp.open("GET", filePath, false);
       xmlhttp.send();
       if (xmlhttp.status == 200) {
@@ -23,6 +24,8 @@
       console.error(xmlhttp);
 
       content.innerHTML = "An error Has Ocurred";
+    }
+    doWork();
   </script>
 </body>
 
