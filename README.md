@@ -6,4 +6,8 @@ I have no template for issues or anything, if you find any errors just open an i
 
 If you find any of this stuff usefull i'ld like to know
 
+## Nuget Server Setup 
+
+[https://insomnyawolf.github.io/NuGets/#setup-your-feed](https://insomnyawolf.github.io/NuGets/#setup-your-feed)
+
 To whoever is reading this => Have a nice day!!
