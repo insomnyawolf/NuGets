@@ -4,14 +4,15 @@
 <head>
   <meta charset="utf-8" />
   <title>insomnyawolf nugets feed</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
 <body>
   Work In Progress
   <div id="content"></div>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    function doWork() {
+
+    function doWork(filePath) {
       var content = document.getElementById('content');
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.open("GET", filePath, false);
@@ -25,7 +26,7 @@
 
       content.innerHTML = "An error Has Ocurred";
     }
-    doWork();
+    doWork("./readme.md");
   </script>
 </body>
 
