@@ -1,1 +1,1 @@
-{"index":"sleet-static","totalHits":7,"data":["BasicIrcClient","ConfigHelper","CsvToObjects","MoeBooruApi","ReflectionExtensions","SaucenaoApi","UdpServer"],"@context":{"@vocab":"http://schema.nuget.org/schema#","totalHits":{"@type":"http://www.w3.org/2001/XMLSchema#integer"}}}
+{"index":"sleet-static","totalHits":8,"data":["BasicIrcClient","ConfigHelper","CsvToObjects","MoeBooruApi","ReflectionExtensions","SaucenaoApi","UdpServer","YtDlpHelper"],"@context":{"@vocab":"http://schema.nuget.org/schema#","totalHits":{"@type":"http://www.w3.org/2001/XMLSchema#integer"}}}
