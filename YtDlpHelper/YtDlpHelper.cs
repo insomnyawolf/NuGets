@@ -152,7 +152,7 @@ namespace YtDlp
                     // Example output
                     // size=    5320kB time=00:00:28.38 bitrate=1535.6kbits/s speed=0.944x
                     // size=    4128kB time=00:00:22.02 bitrate=1535.5kbits/s speed=1.03x
-                    Logger?.LogInformation($"ffmpeg => {trackMetadata.title} => {e.Data}");
+                    Logger?.LogInformation($"ffmpeg => {trackMetadata.webpage_url} => {e.Data}");
 
                     var dataToFind = new string[] { "size=", "time=", "bitrate=", "speed=" };
                     var indexes = new int[dataToFind.Length];

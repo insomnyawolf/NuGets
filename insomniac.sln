@@ -49,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigHelper", "ConfigHelpe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YtDlpHelper", "YtDlpHelper\YtDlpHelper.csproj", "{89949E66-C6F9-4DB8-9081-D2E50BC1E57F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{315CFB51-BAB5-4DE7-B779-EC644283DF86}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1095951D-1DB1-4590-994A-B9AF2625C0EA}"
 	ProjectSection(SolutionItems) = preProject
 		nuget.config = nuget.config
 	EndProjectSection
