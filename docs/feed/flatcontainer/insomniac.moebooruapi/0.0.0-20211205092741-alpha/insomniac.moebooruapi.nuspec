@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>insomniac.MoeBooruApi</id>
+    <version>0.0.0-20211205092741-alpha</version>
+    <authors>insomnyawolf</authors>
+    <description>Simple request library for booru based sites, currently supports konachan.com and yande.re</description>
+    <dependencies>
+      <group targetFramework="net5.0" />
+    </dependencies>
+  </metadata>
+</package>
