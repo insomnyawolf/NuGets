@@ -77,7 +77,7 @@ Create a file called ``nuget.config`` in the folder where the solution is with t
         <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
         
         <!-- this one is for development -->
-        <add key="local packages" value="C:\Users\iw\source\repos\insomnyawolf nugets\docs\NugetBuilds" />
+        <!-- <add key="local packages" value="C:\Users\[Username]\source\repos\insomnyawolf nugets\docs\NugetBuilds" /> -->
     </packageSources>
 
     <activePackageSource>

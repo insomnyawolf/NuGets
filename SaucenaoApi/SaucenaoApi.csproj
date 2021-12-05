@@ -1,12 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>insomnyawolf</Authors>
-    <Company />
-    <Description>Simple saucenao.com request api library</Description>
-    <Version>1.0.1</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Simple saucenao.com request api library</Description>
+		<PackageId>$(SolutionName).$(AssemblyName)</PackageId>
+
+		<Now>$([System.DateTime]::Now.ToString("yyyyMMddhhmmss"))</Now>
+		<BaseVersion>0.0.0.0</BaseVersion>
+		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
+		<Version>$(BaseVersion)-$(Now)-alpha</Version>
+	</PropertyGroup>
 
 </Project>

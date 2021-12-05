@@ -6,5 +6,12 @@
 
 		<!-- Warning: Setting the following switch is *NOT* recommended in web apps. -->
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+		
+		<PackageId>$(SolutionName).$(AssemblyName)</PackageId>
+
+		<Now>$([System.DateTime]::Now.ToString("yyyyMMddhhmmss"))</Now>
+		<BaseVersion>0.0.0.0</BaseVersion>
+		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
+		<Version>$(BaseVersion)-$(Now)-alpha</Version>
 	</PropertyGroup>
 </Project>

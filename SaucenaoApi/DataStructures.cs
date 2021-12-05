@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace SaucenaoApi.Models
+namespace SaucenaoApi
 {
     // Generated with https://app.quicktype.io/?l=csharp
     // Modified by hand

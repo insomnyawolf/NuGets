@@ -1,10 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <Authors>insomnyawolf</Authors>
-    <Description>Simple request library for booru based sites, currently supports konachan.com and yande.re</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<Authors>insomnyawolf</Authors>
+		<Description>Simple request library for booru based sites, currently supports konachan.com and yande.re</Description>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>$(SolutionName).$(AssemblyName)</PackageId>
+
+		<Now>$([System.DateTime]::Now.ToString("yyyyMMddhhmmss"))</Now>
+		<BaseVersion>0.0.0.0</BaseVersion>
+		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
+		<Version>$(BaseVersion)-$(Now)-alpha</Version>
+	</PropertyGroup>
 
 </Project>

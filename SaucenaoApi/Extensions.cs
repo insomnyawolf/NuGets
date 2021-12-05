@@ -1,5 +1,4 @@
-﻿using SaucenaoApi.Models;
-using System.Linq;
+﻿using System.Linq;
 
 namespace SaucenaoApi
 {

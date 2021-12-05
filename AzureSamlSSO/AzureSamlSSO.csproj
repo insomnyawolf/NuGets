@@ -1,11 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<PackageId>$(SolutionName).$(AssemblyName)</PackageId>
 
-  <ItemGroup>
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="5.0.0" />
-  </ItemGroup>
+		<Now>$([System.DateTime]::Now.ToString("yyyyMMddhhmmss"))</Now>
+		<BaseVersion>0.0.0.0</BaseVersion>
+		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
+		<Version>$(BaseVersion)-$(Now)-alpha</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="5.0.0" />
+	</ItemGroup>
 
 </Project>
