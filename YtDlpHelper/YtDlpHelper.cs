@@ -72,12 +72,12 @@ namespace YtDlp
 
                 OnMetadataRecived?.Invoke(entry);
 
-                Logger?.LogTrace($"ytdl-info => {ytdlInfo.StartInfo.FileName} {ytdlInfo.StartInfo.Arguments} => Recived" + e.Data);
+                Logger?.LogTrace($"ytdl-info => {ytdlInfo.StartInfo.FileName} {ytdlInfo.StartInfo.Arguments} => Recived:\n{JsonSerializer.Serialize(entry)}");
             };
 
             ytdlInfo.ErrorDataReceived += (sender, e) =>
             {
-                Logger?.LogError($"ytdl-info => {ytdlInfo.StartInfo.FileName} {ytdlInfo.StartInfo.Arguments} => " + e.Data);
+                Logger?.LogError($"ytdl-info => {ytdlInfo.StartInfo.FileName} {ytdlInfo.StartInfo.Arguments} => Error:\n{JsonSerializer.Serialize(e.Data)}");
             };
 
             ytdlInfo.Exited += (sender, e) =>
