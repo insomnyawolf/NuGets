@@ -50,7 +50,7 @@ namespace YtDlp
             };
 
             // This is a workaround to support playlist, hopefully i never have to touch this again 
-            // I hate myself what i did before trying this, who needs to keep threads with perfect timmins or infinite reading console operations
+            // I hate myself what i did before trying this, who needs to keep threads with perfect timmings or infinite reading console operations
             // Getting data trough events is <3, whoever designed that, thankyou
             // To the dude that designed "ReadLine" and such without timeouts, fuck you >:(
             // But in the end i'm a bit thankfull because that forced me to find a better way that wasn't even that hard tbh
@@ -104,7 +104,7 @@ namespace YtDlp
         public delegate Task FinishedUpdatingStatus();
         public event FinishedUpdatingStatus? OnFinishedUpdatingStatus;
 
-        public async Task DownloadToStream(TrackMetadata trackMetadata, Func<Stream, Task> streamProcessing)
+        public async Task DownloadToStream(TrackMetadata trackMetadata, Func<Stream, Task> streamProcessing, Action<Process>? YtDlProcess = null, Action<Process>? ffmpegProcess = null)
         {
             using var ytdlContent = new Process();
 
@@ -113,7 +113,7 @@ namespace YtDlp
                 FileName = "yt-dlp",
                 Arguments = $@"--quiet --format bestaudio ""{trackMetadata.webpage_url}"" -o -",
                 RedirectStandardOutput = true,
-                RedirectStandardInput = false,
+                RedirectStandardInput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
@@ -224,6 +224,9 @@ namespace YtDlp
             {
                 Time = TimeSpan.FromSeconds(0)
             });
+
+            YtDlProcess?.Invoke(ytdlContent);
+            ffmpegProcess?.Invoke(ffmpeg);
 
             ytdlContent.Start();
             ffmpeg.Start();
