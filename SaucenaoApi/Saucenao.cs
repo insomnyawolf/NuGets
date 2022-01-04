@@ -1,137 +1,198 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SaucenaoApi
 {
+    // Replacing api with web scrapping
+
     // https://saucenao.com/user.php?page=search-api
-    public class SaucenaoConfig
-    {
-        public string ApiKey { get; set; }
-
-        // 0 normal html
-        // 1 xml api(not implemented)
-        // 2 json api
-        public int OutputType { get; set; } = 2;
-
-        // 0 Does nothing
-        // 1 Causes each index which has a match to output at most 1 for testing. Works best with a numres greater than the number of indexes searched.
-        public string TestMode { get; set; }
-        public string Dbmask { get; set; }
-        public string Dbmaski { get; set; }
-        public string Db { get; set; }
-        public string Numres { get; set; }
-
-        //0 no result deduping
-        //1 consolidate booru results and dedupe by item identifier
-        //2 all implemented dedupe methods such as by series name.
-        // Default is 2, more levels may be added in future.
-        public string Dedupe { get; set; }
-        public string Minsim { get; set; }
-    }
 
     public class Saucenao
     {
-        private const string SaucenaoHost = "http://saucenao.com/search.php?";
+        private const string SaucenaoHost = "http://saucenao.com/search.php";
         private readonly HttpClient HttpClient;
-        private readonly SaucenaoConfig SaucenaoRequesterConfig;
 
-        public Saucenao(HttpClient HttpClient, SaucenaoConfig SaucenaoRequesterConfig)
+        public Saucenao(HttpClient HttpClient)
         {
             this.HttpClient = HttpClient;
-            this.SaucenaoRequesterConfig = SaucenaoRequesterConfig;
         }
 
-        public Saucenao(SaucenaoConfig SaucenaoRequesterConfig) : this(new HttpClient(), SaucenaoRequesterConfig)
+        public Saucenao() : this(new HttpClient())
         {
 
         }
 
-        private Dictionary<string, object> GetRequestBase()
+        public async Task<List<SaucenaoResponse>> GetSauceAsync(Stream file, string filename)
         {
-            return new Dictionary<string, object>()
+            var data = GetBaseHttpRequestMessage();
+
+            data.Add(new StreamContent(file), "file", filename);
+
+            return await GetSauceAsync(data);
+        }
+
+        public async Task<List<SaucenaoResponse>> GetSauceAsync(string url)
+        {
+            var data = GetBaseHttpRequestMessage();
+
+            data.Add(new StringContent(url), "url");
+
+            return await GetSauceAsync(data);
+        }
+
+        private MultipartFormDataContent GetBaseHttpRequestMessage()
+        {
+            var req = new MultipartFormDataContent
             {
-                { "api_key", SaucenaoRequesterConfig.ApiKey },
-                { "output_type", SaucenaoRequesterConfig.OutputType },
-                { "testmode", SaucenaoRequesterConfig.TestMode },
-                { "dbmask", SaucenaoRequesterConfig.Dbmask },
-                { "dbmaski", SaucenaoRequesterConfig.Dbmaski },
-                { "db", SaucenaoRequesterConfig.Db },
-                { "numres", SaucenaoRequesterConfig.Numres },
-                { "dedupe", SaucenaoRequesterConfig.Dedupe },
-                { "minsim", SaucenaoRequesterConfig.Minsim },
+                { new StringContent("1"), "frame" },
+                { new StringContent("0"), "hide" },
+                { new StringContent("999"), "database" }
             };
+
+            return req;
         }
 
-        //Example output
-        // https://saucenao.com/search.php?db=999&output_type=2&testmode=1&numres=16&url=http%3A%2F%2Fsaucenao.com%2Fimages%2Fstatic%2Fbanner.gif
-        private static Uri SerializeUrl(Dictionary<string, object> values)
+        private async Task<List<SaucenaoResponse>> GetSauceAsync(HttpContent httpRequestMessage)
         {
-            var query = string.Empty;
+            var response = await HttpClient.PostAsync(SaucenaoHost, httpRequestMessage);
 
-            foreach (var item in values)
+            var content = await response.Content.ReadAsStreamAsync();
+
+            if (!response.IsSuccessStatusCode)
             {
-                if (item.Value is null)
+                throw new Exception(await new StreamReader(content).ReadToEndAsync());
+            }
+
+            var doc = new HtmlDocument();
+
+            doc.Load(content);
+
+            var nodes = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div[3]");
+
+            var list = new List<SaucenaoResponse>();
+
+            foreach (var resultNodes in nodes.ChildNodes)
+            {
+                // Pilla solo los resultados
+                if (!resultNodes.HasClass("result"))
                 {
                     continue;
                 }
 
-                query += $"{item.Key}={item.Value}&";
+                // ignora los de baja similitud
+                if (resultNodes.HasClass("hidden"))
+                {
+                    continue;
+                }
+
+                foreach (var tableNode in resultNodes.ChildNodes)
+                {
+                    // ignora el botón de mostrar resultados de baja similitud
+                    if (tableNode.NodeType != HtmlNodeType.Element)
+                    {
+                        continue;
+                    }
+
+                    var parsedResponse = new SaucenaoResponse();
+
+                    foreach (var groupInfoNode in tableNode.FirstChild.LastChild.ChildNodes)
+                    {
+                        if (groupInfoNode.HasClass("resultmatchinfo"))
+                        {
+                            foreach (var infoNode in groupInfoNode.ChildNodes)
+                            {
+                                if (infoNode.HasClass("resultsimilarityinfo"))
+                                {
+                                    parsedResponse.Similarity = infoNode.InnerText;
+                                    continue;
+                                }
+
+                                if (infoNode.HasClass("resultmiscinfo"))
+                                {
+                                    foreach (var misc in infoNode.ChildNodes)
+                                    {
+                                        if(misc.Name == "a")
+                                        {
+                                            var href = misc.GetAttributeValue<string>("href", null);
+
+                                            if (!string.IsNullOrEmpty(href))
+                                            {
+                                                parsedResponse.Url.Add(href.Trim());
+                                            }
+                                            continue;
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+                        if (groupInfoNode.HasClass("resultcontent"))
+                        {
+                            foreach (var infoNode in groupInfoNode.ChildNodes)
+                            {
+                                if (infoNode.HasClass("resulttitle"))
+                                {
+                                    const string patternCreator = "Creator:";
+                                    if (infoNode.InnerText.StartsWith(patternCreator))
+                                    {
+                                        parsedResponse.Creator = infoNode.InnerText[patternCreator.Length..];
+                                        continue;
+                                    }
+
+                                    parsedResponse.Title = infoNode.InnerText;
+                                    continue;
+                                }
+
+                                if (infoNode.HasClass("resultcontentcolumn"))
+                                {
+                                    foreach (var contentColumn in infoNode.ChildNodes)
+                                    {
+                                        const string patternSource = "Source:";
+                                        if (contentColumn.InnerText.StartsWith(patternSource))
+                                        {
+                                            parsedResponse.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
+                                            continue;
+                                        }
+
+                                        const string patternPixivId = "Pixiv ID:";
+                                        if (contentColumn.InnerText.StartsWith(patternPixivId))
+                                        {
+                                            parsedResponse.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
+                                            continue;
+                                        }
+
+                                        const string patterCreator2 = "Member:";
+                                        if (contentColumn.InnerText.StartsWith(patterCreator2))
+                                        {
+                                            parsedResponse.Creator = contentColumn.NextSibling.InnerText;
+                                            continue;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    list.Add(parsedResponse);
+                }
+
             }
 
-            return new Uri(SaucenaoHost + query);
+            return list;
         }
+    }
 
-        public async Task<SaucenaoResponse> FindSource(Stream image)
-        {
-            var data = GetRequestBase();
-
-            var url = SerializeUrl(data);
-
-            var req = new HttpRequestMessage(HttpMethod.Post, url);
-
-            // Add Image Stream Here
-            using var content = new MultipartFormDataContent("Upload----" + DateTime.Now.Ticks.ToString("x"))
-            {
-                { new StreamContent(image), "file", "upload.jpg" }
-            };
-
-            req.Content = content;
-
-            return await FindSource(req);
-        }
-
-        public async Task<SaucenaoResponse> FindSource(string imageUrl)
-        {
-            var data = GetRequestBase();
-
-            data.Add("url", imageUrl);
-
-            var url = SerializeUrl(data);
-
-            var req = new HttpRequestMessage(HttpMethod.Post, url);
-
-            return await FindSource(req);
-        }
-
-        private async Task<SaucenaoResponse> FindSource(HttpRequestMessage httpRequestMessage)
-        {
-            var response = await HttpClient.SendAsync(httpRequestMessage);
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception(content);
-            }
-
-            content = Regex.Unescape(content).Replace("\\/", "/");
-
-            return JsonSerializer.Deserialize<SaucenaoResponse>(content);
-        }
+    public class SaucenaoResponse
+    {
+        public string Similarity { get; set; }
+        public List<string> Url { get; set; } = new List<string>();
+        public string SourceUrl { get; set; }
+        public string Title { get; set; }
+        public string Creator { get; set; }
     }
 }
