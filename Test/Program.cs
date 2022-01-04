@@ -24,7 +24,7 @@ namespace Test
         {
             var saucenao = new Saucenao();
 
-            var data = await saucenao.GetSauceAsync("https://media.discordapp.net/attachments/759124398325366784/927643925471178792/unknown.png");
+            var data = await saucenao.GetSauceAsync("https://media.discordapp.net/attachments/759124398325366784/927704819345555506/unknown.png?width=315&height=468");
         }
     }
 }
