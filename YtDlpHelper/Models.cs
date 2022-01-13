@@ -16,10 +16,10 @@
     //size = 5320kB time = 00:00:28.38 bitrate = 1535.6kbits / s speed = 0.944x
     public struct ProgressUpdateData
     {
-        public string? Size { get; internal set; }
+        public string? Size { get; internal set; } = null;
         public TimeSpan Time { get; internal set; } = TimeSpan.Zero;
-        public string? Bitrate { get; internal set; }
-        public string? Speed { get; internal set; }
+        public string? Bitrate { get; internal set; } = null;
+        public string? Speed { get; internal set; } = null;
     }
 }
 

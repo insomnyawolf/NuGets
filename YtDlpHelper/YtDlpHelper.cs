@@ -238,15 +238,14 @@ namespace YtDlp
             _ = Task.Run(async () =>
             {
                 await ytdlContent.StandardOutput.BaseStream.CopyToAsync(ffmpeg.StandardInput.BaseStream);
+                // No mas datos
+                ffmpeg.StandardInput.Close();
+                ytdlContent.Close();
             });
 
             // Done that way bc object disposal shinenigans
             await streamProcessing.Invoke(ffmpeg.StandardOutput.BaseStream);
 
-            // No mas datos
-            ffmpeg.StandardInput.Close();
-
-            ytdlContent.Close();
             ffmpeg.Close();
         }
     }

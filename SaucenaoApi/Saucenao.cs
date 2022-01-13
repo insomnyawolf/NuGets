@@ -152,6 +152,7 @@ namespace SaucenaoApi
                                 {
                                     foreach (var contentColumn in infoNode.ChildNodes)
                                     {
+#warning improve this
                                         const string patternSource = "Source:";
                                         if (contentColumn.InnerText.StartsWith(patternSource))
                                         {
@@ -168,6 +169,20 @@ namespace SaucenaoApi
 
                                         const string patterCreator2 = "Member:";
                                         if (contentColumn.InnerText.StartsWith(patterCreator2))
+                                        {
+                                            parsedResponse.Creator = contentColumn.NextSibling.InnerText;
+                                            continue;
+                                        }
+
+                                        const string patternTweetId = "Tweet ID:";
+                                        if (contentColumn.InnerText.StartsWith(patternTweetId))
+                                        {
+                                            parsedResponse.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
+                                            continue;
+                                        }
+
+                                        const string patterCreator3 = "Twitter:";
+                                        if (contentColumn.InnerText.StartsWith(patterCreator3))
                                         {
                                             parsedResponse.Creator = contentColumn.NextSibling.InnerText;
                                             continue;
