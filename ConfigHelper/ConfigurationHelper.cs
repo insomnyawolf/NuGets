@@ -1,26 +1,50 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace ConfigHelper
 {
     public class ConfigurationHelper<T> where T : class, new()
     {
+        private static readonly JsonSerializerOptions JsonSerializerOptions;
+
+        static ConfigurationHelper()
+        {
+            JsonSerializerOptions = new()
+            {
+                AllowTrailingCommas = true,
+                DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+                IgnoreReadOnlyFields = true,
+                IgnoreReadOnlyProperties = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                WriteIndented = true,
+                IncludeFields = true,
+            };
+
+            JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        }
+
+        public delegate void ConfigurationChanged();
+        public event ConfigurationChanged OnConfigurationChanged;
+
         private readonly string ConfigFullPath;
         private readonly string ConfigDirectory;
         private FileSystemWatcher watcher;
 
         private readonly FileStream FileStream;
 
-        static SemaphoreSlim Semaphore = new(1);
+        private readonly SemaphoreSlim Semaphore = new(1);
 
-        private ILogger<ConfigurationHelper<T>> Logger;
+        private readonly ILogger<ConfigurationHelper<T>> Logger;
 
         public T Config { get; private set; }
 
-        public ConfigurationHelper(string ConfigPath, ILoggerFactory logger)
+        public ConfigurationHelper(string ConfigPath, ILoggerFactory logger = null)
         {
             Logger = logger?.CreateLogger<ConfigurationHelper<T>>();
 
@@ -30,7 +54,7 @@ namespace ConfigHelper
             }
 
             ConfigFullPath = Path.GetFullPath(ConfigPath);
-            ConfigDirectory = Path.GetDirectoryName(ConfigPath);
+            ConfigDirectory = Path.GetDirectoryName(ConfigPath) + '/';
 
             FileStream = File.Open(ConfigFullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
 
@@ -71,22 +95,36 @@ namespace ConfigHelper
             watcher.EnableRaisingEvents = true;
         }
 
+        private bool IsDispatched = false;
+
+        // It calls the event twice and i can't figure why
         private void ChangeDetected(object source, FileSystemEventArgs e)
         {
+            if (IsDispatched)
+            {
+                IsDispatched = false;
+                return;
+            }
+
+            IsDispatched = true;
+
+            //var src = (FileSystemWatcher)source;
             Load();
+            OnConfigurationChanged?.Invoke();
         }
 
         public void Load()
         {
-            if (!File.Exists(ConfigFullPath))
+            Semaphore.Wait();
+            if (!File.Exists(ConfigFullPath) || FileStream.Length == 0)
             {
+                // IMPORTANT, prevents deadlock
+                Semaphore.Release();
                 Save();
             }
 
-            Semaphore.Wait();
-
             FileStream.Position = 0;
-            Config = JsonSerializer.Deserialize<T>(FileStream);
+            Config = JsonSerializer.Deserialize<T>(FileStream, JsonSerializerOptions);
 
             Semaphore.Release();
 
@@ -95,6 +133,7 @@ namespace ConfigHelper
 
         public void Save()
         {
+            Semaphore.Wait();
             if (Config is null)
             {
                 Config = new T();
@@ -105,10 +144,8 @@ namespace ConfigHelper
                 Directory.CreateDirectory(ConfigDirectory);
             }
 
-            Semaphore.Wait();
-
             FileStream.Position = 0;
-            JsonSerializer.Serialize(FileStream, Config);
+            JsonSerializer.Serialize(FileStream, Config, JsonSerializerOptions);
             FileStream.Flush();
             FileStream.SetLength(FileStream.Position);
 
@@ -119,6 +156,8 @@ namespace ConfigHelper
 
         public void OverwriteCurrent(T newSettings = null)
         {
+            Semaphore.Wait();
+
             if (Config is null)
             {
                 Config = new T();
