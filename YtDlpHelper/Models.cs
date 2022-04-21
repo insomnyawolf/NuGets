@@ -14,7 +14,7 @@
 #pragma warning restore IDE1006 // Estilos de nombres
 
     //size = 5320kB time = 00:00:28.38 bitrate = 1535.6kbits / s speed = 0.944x
-    public struct ProgressUpdateData
+    public class ProgressUpdateData
     {
         public string? Size { get; internal set; } = null;
         public TimeSpan Time { get; internal set; } = TimeSpan.Zero;
