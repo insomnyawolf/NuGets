@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Fonts\ar-ciela_compartment.ttf" />
+    <None Remove="Fonts\hymmnos.ttf" />
+    <None Remove="Fonts\MiniMOOD Outline.ttf" />
+    <None Remove="Fonts\MiniMOOD.ttf" />
+    <None Remove="Fonts\MOOD MKII Outline.ttf" />
+    <None Remove="Fonts\MOOD MKII.ttf" />
+    <None Remove="Fonts\MOOD Outline.ttf" />
+    <None Remove="Fonts\MOOD.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\ar-ciela_compartment.ttf" />
+    <EmbeddedResource Include="Fonts\hymmnos.ttf" />
+    <EmbeddedResource Include="Fonts\MiniMOOD Outline.ttf" />
+    <EmbeddedResource Include="Fonts\MiniMOOD.ttf" />
+    <EmbeddedResource Include="Fonts\MOOD MKII Outline.ttf" />
+    <EmbeddedResource Include="Fonts\MOOD MKII.ttf" />
+    <EmbeddedResource Include="Fonts\MOOD Outline.ttf" />
+    <EmbeddedResource Include="Fonts\MOOD.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta16" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.1" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
+  </ItemGroup>
+
+</Project>
