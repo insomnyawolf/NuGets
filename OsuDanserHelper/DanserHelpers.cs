@@ -5,31 +5,47 @@ using Extensions.File;
 using OsuParsers.Decoders;
 using OsuApiHelper;
 using System.Text;
+using Microsoft.Data.Sqlite;
 
-namespace DanserHelpers
+namespace OsuDanserHelper
 {
-    public class DanserHelper : ExtensionsCliArgumentBuilder
+    public class DanserHelper : ExtensionsCliArgumentBuilder, IDisposable
     {
         private static readonly string CurrentVidDir = Path.Combine(AppContext.BaseDirectory, "videos");
+
+        private SqliteConnection DatabaseConnection { get; }
         private OsuApi OsuApi { get; }
-        private string ReplayPath { get; set; }
+        private string VideoTitle { get; set; }
+        public string ReplayPath { get; private set; }
+        public string MapMD5 { get; private set; }
+        public DanserSettings DanserSettings { get; private set; }
 
         public DanserHelper(OsuApi OsuApi)
         {
             this.OsuApi = OsuApi;
+            this.DatabaseConnection = InitializeSqlite();
+            this.DanserSettings = DanserSettingsRead();
         }
 
         public void SetArtist(string value) => AddEscaped("-artist", value);
         public void SetTitle(string value) => AddEscaped("-title", value);
         public void SetDifficulty(string value) => AddEscaped("-difficulty", value);
         public void SetCreator(string value) => AddEscaped("-creator", value);
-        public void SetMD5(string value) => AddEscaped("-md5", value);
+        public void SetMD5(string value)
+        {
+            MapMD5 = value;
+            AddEscaped("-md5", value);
+        }
         public void SetBeatmapID(int value) => AddEscaped("-id", value);
         public void SetCursors(int value) => AddEscaped("-cursors", value);
         public void SetTagCount(int value) => AddEscaped("-tag", value);
         public void SetSpeed(float value) => AddEscaped("-speed", value);
         public void SetPitch(float value) => AddEscaped("-pitch", value);
-        public void SetSettingsJsonName(string value) => AddEscaped("-settings", value);
+        public void SetSettingsJsonName(string value)
+        {
+            AddEscaped("-settings", value);
+            this.DanserSettings = DanserSettingsRead();
+        }
         public void Debug() => AddEscaped("-debug");
         public void Play() => AddEscaped("-play");
         public void Skip() => AddEscaped("-skip");
@@ -54,7 +70,7 @@ namespace DanserHelpers
         public void ScreenShootAt(float value) => AddEscaped("-ss", value);
         public void Quickstart() => AddEscaped("-quickstart");
 
-        public async Task<string?> RunReplay()
+        public async Task Prepare()
         {
             if (string.IsNullOrEmpty(ReplayPath))
             {
@@ -68,44 +84,40 @@ namespace DanserHelpers
 
             var gamemode = replay.Ruleset.ToString();
 
-            string? tempVideoName = null;
-
             if (Arguments.ContainsKey("-record"))
             {
                 var data = await OsuApi.BeatmapLookup(checksum: replay.BeatmapMD5Hash);
 
                 // ➢ looks cool but sucks for debugging
-                tempVideoName = $"{replay.PlayerName} @ {data.beatmapset.title} - {data.beatmapset.artist} [{data.version}] ({replay.Ruleset}) +{replay.Mods} {replay.Accuracy:0.00}%";
+                VideoTitle = $"{replay.PlayerName} @ {data.beatmapset.title} - {data.beatmapset.artist} [{data.version}] ({replay.Ruleset}) +{replay.Mods} {replay.Accuracy:0.00}%";
 
                 // Sanitize Path
                 var test = Path.GetInvalidFileNameChars();
                 foreach (var ch in test)
                 {
-                    if (tempVideoName.IndexOf(ch) != -1)
+                    if (VideoTitle.IndexOf(ch) != -1)
                     {
                         ExtensionsStdOutput.WarningOutput($"'{ch}' cannot be used in paths on this machine and was deleted from the title");
-                        tempVideoName = tempVideoName.Replace(ch + "", string.Empty);
+                        VideoTitle = VideoTitle.Replace(ch + "", string.Empty);
                     }
                 }
 
                 if (replay.PerfectCombo)
                 {
-                    tempVideoName += " FC";
+                    VideoTitle += " FC";
                 }
 
                 Arguments.Remove("-record");
 
-                Record(tempVideoName);
+                Record(VideoTitle);
             }
+        }
 
-            // Do things and such
+        private async Task<string> Run()
+        {
+            ExtensionsStdOutput.HighLightedInfoOutput($"The video will be saved as {VideoTitle}");
             await ExecuteDanser();
-
-            tempVideoName = ExtensionsFile.FileExistWithAnyExtensionGetName(CurrentVidDir, tempVideoName);
-
-            ExtensionsStdOutput.HighLightedInfoOutput($"The video will be saved on {tempVideoName}");
-
-            return tempVideoName;
+            return ExtensionsFile.FileExistWithAnyExtensionGetName(CurrentVidDir, VideoTitle);
         }
 
         private async Task ExecuteDanser()
@@ -152,6 +164,15 @@ namespace DanserHelpers
             return ToString();
         }
 
+        private DanserSettings DanserSettingsRead()
+        {
+            var path = Path.Combine(AppContext.BaseDirectory, "settings", Arguments.ContainsKey("-settings") ? Arguments["-settings"] : "default.json");
+
+            using var settingsFile = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+            return System.Text.Json.JsonSerializer.Deserialize<DanserSettings>(settingsFile);
+        }
+
         public static void CheckDependences()
         {
             var exists = ExtensionsFile.FileExistWithAnyExtension(AppContext.BaseDirectory, "danser");
@@ -159,6 +180,50 @@ namespace DanserHelpers
             if (!exists)
             {
                 ExtensionsStdOutput.FatalOutput($"This program only works if it's on the same folder as danser, please check your install");
+            }
+        }
+
+        public string GetBackgroundImagePath()
+        {
+            using (var statement = DatabaseConnection.CreateCommand())
+            {
+                statement.CommandText = @$"SELECT dir, bg FROM beatmaps where md5 = ""{MapMD5}"";";
+
+                using (var reader = statement.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        return Path.Combine(DanserSettings.General.OsuSongsDir, reader[0].ToString(), reader[1].ToString());
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static SqliteConnection InitializeSqlite()
+        {
+            var dbLocation = Path.Combine(AppContext.BaseDirectory, "danser.db");
+            var conn = new SqliteConnection($"Data Source={dbLocation};Mode=ReadOnly;");
+            conn.Open();
+            return conn;
+        }
+
+        // Destructor
+        bool IsFinalized = false;
+
+        ~DanserHelper()
+        {
+            Dispose();
+        }
+
+        public virtual void Dispose()
+        {
+            if (!IsFinalized)
+            {
+                DatabaseConnection.Close();
+                DatabaseConnection.Dispose();
+                IsFinalized = true;
+                GC.SuppressFinalize(this);
             }
         }
     }
