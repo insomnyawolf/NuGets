@@ -1,5 +1,5 @@
 using CsvToObjects;
-using ReflectionExtensions;
+using Extensions.Reflection;
 using NUnit.Framework;
 using System;
 using System.IO;

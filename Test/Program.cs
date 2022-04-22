@@ -1,6 +1,6 @@
 ﻿//#define LoadNewData
 using CsvToObjects;
-using ReflectionExtensions;
+using Extensions.Reflection;
 using MoeBooruApi;
 using System;
 using System.Collections;

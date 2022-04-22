@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ExtensionsReflection\ReflectionExtensions.csproj" />
+	  <ProjectReference Include="..\Extensions\Extensions.csproj" />
 	</ItemGroup>
 
 </Project>

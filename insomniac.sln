@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoeBooruApi", "MoeBooruAPI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{408716EA-6454-4FDD-BE72-34FD781C3A4B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReflectionExtensions", "ExtensionsReflection\ReflectionExtensions.csproj", "{3A3969F7-69D8-41C2-AEB1-52CE8B5D0C99}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvToObjects", "CsvToObjects\CsvToObjects.csproj", "{D2AD23BC-B3C6-4442-89A2-79EBF74BCD2A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extensions", "Extensions\Extensions.csproj", "{40DE1385-69F0-46B3-B0BD-EC79D843EDC3}"
@@ -88,10 +86,6 @@ Global
 		{408716EA-6454-4FDD-BE72-34FD781C3A4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{408716EA-6454-4FDD-BE72-34FD781C3A4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{408716EA-6454-4FDD-BE72-34FD781C3A4B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A3969F7-69D8-41C2-AEB1-52CE8B5D0C99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A3969F7-69D8-41C2-AEB1-52CE8B5D0C99}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A3969F7-69D8-41C2-AEB1-52CE8B5D0C99}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A3969F7-69D8-41C2-AEB1-52CE8B5D0C99}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D2AD23BC-B3C6-4442-89A2-79EBF74BCD2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D2AD23BC-B3C6-4442-89A2-79EBF74BCD2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2AD23BC-B3C6-4442-89A2-79EBF74BCD2A}.Release|Any CPU.ActiveCfg = Release|Any CPU

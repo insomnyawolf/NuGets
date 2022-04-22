@@ -1,4 +1,4 @@
-﻿using ReflectionExtensions;
+﻿using Extensions.Reflection;
 using System.Text;
 
 namespace CsvToObjects
