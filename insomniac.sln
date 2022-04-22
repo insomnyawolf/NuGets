@@ -56,6 +56,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitHelper", "GitHelper\GitH
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LowLevelInputHooks", "LowLevelInputHooks\LowLevelInputHooks.csproj", "{809E3C31-A556-4E1A-A051-BB330A38B94F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuDanserHelper", "OsuDanserHelper\OsuDanserHelper.csproj", "{8A72003E-1CE0-4531-B2AF-82C92DEBD83E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuApiHelper", "OsuApiHelper\OsuApiHelper.csproj", "{69C9CC16-A1D6-475D-961E-D0AA6E515E53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependences", "Dependences", "{CBF7DB00-C6A9-433D-B57E-3B0AB7960C92}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuParsers", "Dependences\OsuParsers\OsuParsers\OsuParsers.csproj", "{9A31B224-0F62-4AD6-8B55-EBC4146509C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OauthClientBase", "OauthClientBase\OauthClientBase.csproj", "{0703A6C3-B5AF-41E7-B8FD-471918C77C08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -154,6 +164,22 @@ Global
 		{809E3C31-A556-4E1A-A051-BB330A38B94F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{809E3C31-A556-4E1A-A051-BB330A38B94F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{809E3C31-A556-4E1A-A051-BB330A38B94F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A72003E-1CE0-4531-B2AF-82C92DEBD83E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A72003E-1CE0-4531-B2AF-82C92DEBD83E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A72003E-1CE0-4531-B2AF-82C92DEBD83E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A72003E-1CE0-4531-B2AF-82C92DEBD83E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69C9CC16-A1D6-475D-961E-D0AA6E515E53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69C9CC16-A1D6-475D-961E-D0AA6E515E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69C9CC16-A1D6-475D-961E-D0AA6E515E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69C9CC16-A1D6-475D-961E-D0AA6E515E53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A31B224-0F62-4AD6-8B55-EBC4146509C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A31B224-0F62-4AD6-8B55-EBC4146509C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A31B224-0F62-4AD6-8B55-EBC4146509C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A31B224-0F62-4AD6-8B55-EBC4146509C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0703A6C3-B5AF-41E7-B8FD-471918C77C08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0703A6C3-B5AF-41E7-B8FD-471918C77C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0703A6C3-B5AF-41E7-B8FD-471918C77C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0703A6C3-B5AF-41E7-B8FD-471918C77C08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,6 +189,7 @@ Global
 		{C166C7EF-640C-408C-A9A2-6B142989CE29} = {BA6363E3-1041-4C3C-8DDC-522F1EECF90E}
 		{29F59FC3-9A20-4E57-A3B0-5CAB82969CE7} = {BA6363E3-1041-4C3C-8DDC-522F1EECF90E}
 		{66766D02-B55E-4D25-854D-E6A1DC26927E} = {BA6363E3-1041-4C3C-8DDC-522F1EECF90E}
+		{9A31B224-0F62-4AD6-8B55-EBC4146509C4} = {CBF7DB00-C6A9-433D-B57E-3B0AB7960C92}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D7ABE5D-CF6C-49F9-A209-7F07E818A532}

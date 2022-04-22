@@ -1,0 +1,3 @@
+[submodule "Dependences/OsuParsers"]
+	path = Dependences/OsuParsers
+	url = https://github.com/insomnyawolf/OsuParsers

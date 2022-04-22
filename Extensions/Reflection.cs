@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Globalization;
+using System.Threading;
 
 namespace Extensions.Reflection
 {
@@ -18,8 +20,18 @@ namespace Extensions.Reflection
     //          (      ) | |
     //  ________|   _/_  | |
     //<__________\______)\__)
-    public static partial class ReflectionExtensions
+    public static class ExtensionsReflection
     {
+        internal static readonly Type TypeInt = typeof(int);
+        internal static readonly Type TypeFloat = typeof(float);
+        internal static readonly Type TypeDouble = typeof(double);
+        internal static readonly Type TypeDecimal = typeof(decimal);
+        internal static readonly Type TypeBool = typeof(bool);
+        internal static readonly Type TypeString = typeof(string);
+        internal static readonly Type TypeDateTime = typeof(DateTime);
+        internal static readonly Type TypeTimeSpan = typeof(TimeSpan);
+        internal static readonly Type TypeNullable = typeof(Nullable<>);
+
         public static TypeConversionConfig TypeConversionConfig = new TypeConversionConfig();
         /// <summary>
         /// Reflection Invoke Parameter Helper
@@ -166,5 +178,16 @@ namespace Extensions.Reflection
             var value = propType.ConvertToCompatibleType(data, typeConversionConfig);
             propInfo.SetValue(obj, value);
         }
+    }
+
+    public class TypeConversionConfig
+    {
+        public bool AcceptLossyConversion { get; set; } = false;
+        public string DateTimeFormat { get; set; } = "dd/MM/yyyy";
+        public DateTimeStyles DateTimeStyles { get; set; } = DateTimeStyles.AllowWhiteSpaces;
+        public string TimeSpanFormat { get; set; } = "c";
+        public TimeSpanStyles TimeSpanStyles { get; set; } = TimeSpanStyles.None;
+        public NumberStyles NumberStyles { get; set; } = NumberStyles.Any;
+        public CultureInfo CultureInfo { get; set; } = Thread.CurrentThread.CurrentCulture;
     }
 }
