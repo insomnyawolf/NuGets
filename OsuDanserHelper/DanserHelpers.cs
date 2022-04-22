@@ -17,9 +17,6 @@ namespace DanserHelpers
         public DanserHelper(OsuApi OsuApi)
         {
             this.OsuApi = OsuApi;
-#if DEBUG
-            SetSettingsJsonName("testing");
-#endif
         }
 
         public void SetArtist(string value) => AddEscaped("-artist", value);
