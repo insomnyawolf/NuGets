@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReflectionExtensions
+namespace Extensions.Reflection
 {
     public static partial class ReflectionExtensions
     {

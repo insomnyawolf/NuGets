@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReflectionExtensions", "Ext
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvToObjects", "CsvToObjects\CsvToObjects.csproj", "{D2AD23BC-B3C6-4442-89A2-79EBF74BCD2A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtensionsString", "ExtensionsString\ExtensionsString.csproj", "{40DE1385-69F0-46B3-B0BD-EC79D843EDC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extensions", "Extensions\Extensions.csproj", "{40DE1385-69F0-46B3-B0BD-EC79D843EDC3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorksheetToObjects", "WorksheetToObjects\WorksheetToObjects.csproj", "{E27D133F-0217-4EC8-8C7F-928D6883C931}"
 EndProject

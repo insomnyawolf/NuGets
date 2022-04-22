@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExtensionsString
+namespace Extensions.String
 {
     public static class ExtensionsString
     {

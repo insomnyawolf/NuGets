@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Threading;
 
-namespace ReflectionExtensions
+namespace Extensions.Reflection
 {
     public class TypeConversionConfig
     {

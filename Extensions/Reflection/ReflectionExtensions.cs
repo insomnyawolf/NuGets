@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace ReflectionExtensions
+namespace Extensions.Reflection
 {
     // Since the code is not as beautiful as i would like, enjoy this ascii art
     //
