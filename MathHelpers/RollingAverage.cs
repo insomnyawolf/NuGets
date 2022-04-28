@@ -2,8 +2,11 @@
 {
     public class RollingAverage
     {
-        private readonly double[] Values;
         private readonly int MaxPossibleLenght;
+        private readonly double[] Values;
+        public double Total = 0;
+
+        public double Average => Total / Values.Length;
 
         private int CurrentPosition;
         public RollingAverage(int totalValues)
@@ -21,16 +24,12 @@
                 CurrentPosition = 0;
             }
 
+            Total -= Values[CurrentPosition];
+            Total += nextValue;
+
             Values[CurrentPosition] = nextValue;
 
-            double total = 0;
-
-            for (int i = 0; i < Values.Length; i++)
-            {
-                total += Values[i];
-            }
-
-            return total / Values.Length;
+            return Average;
         }
     }
 }
