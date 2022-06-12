@@ -5,7 +5,7 @@ namespace Extensions.CliArgumentBuilder
 {
     public abstract class ExtensionsCliArgumentBuilder
     {
-        public Dictionary<string, string?> Arguments { get; } = new();
+        public Dictionary<string, string?> Arguments { get; } = new Dictionary<string, string?>();
 
         public virtual void AddEscaped(string key)
         {
@@ -21,7 +21,7 @@ namespace Extensions.CliArgumentBuilder
         // Only the value is escaped
         public virtual void AddEscaped(string key, object value)
         {
-            Arguments.Add(key, $@"""{value.ToString()}""");
+            Arguments.Add(key, $@"""{value}""");
         }
 
         public override string ToString()
