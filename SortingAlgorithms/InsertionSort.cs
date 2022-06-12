@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace SortingAlgorithms
@@ -10,7 +9,7 @@ namespace SortingAlgorithms
 
         private readonly LinkedList<ItemType> ResultList;
 
-        public InsertionSort(Func<ItemType, ItemType, bool> Comparison, IEnumerable<ItemType> Origin)
+        public InsertionSort(Func<ItemType, ItemType, bool> Comparison, IEnumerable<ItemType> Origin = null)
         {
             this.ResultList = new LinkedList<ItemType>();
             this.Comparison = Comparison;
@@ -55,6 +54,7 @@ namespace SortingAlgorithms
                     ResultList.AddAfter(itemNode, item);
                     return;
                 }
+#warning probably i can optimize this.
                 else if (current && !next)
                 {
                     ResultList.AddBefore(itemNode, item);
