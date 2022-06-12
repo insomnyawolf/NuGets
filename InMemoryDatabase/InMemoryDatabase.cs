@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace InMemoryDatabase
 {
 #warning THIS PROBABLY ISN'T THREAD SAFE YET
     public class InMemoryDatabase<T> where T : class
     {
-        private readonly MemoryPool<DatabaseEntry<T>> DatabaseEntryPool = MemoryPool<DatabaseEntry<T>>.Shared;
+        //private readonly MemoryPool<DatabaseEntry<T>> DatabaseEntryPool = MemoryPool<DatabaseEntry<T>>.Shared;
         private readonly MemoryPool<T> ResultPool = MemoryPool<T>.Shared;
 
         private List<DatabaseEntry<T>> Data;
 
         private Stream? PersistanceStream;
-        private readonly FileStream? PersistanceFileStream;
 
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions()
         {
@@ -26,36 +29,32 @@ namespace InMemoryDatabase
             Encoder = JavaScriptEncoder.Default,
         };
 
-        public InMemoryDatabase(string path) : this()
-        {
-            var FileStreamOptions = new FileStreamOptions
-            {
-                Access = FileAccess.ReadWrite,
-                Mode = FileMode.OpenOrCreate,
-                Share = FileShare.Read,
-                Options = FileOptions.SequentialScan | FileOptions.WriteThrough,
-                BufferSize = 4096,
-            };
+        public bool IsCompressed { get; }
 
-            PersistanceFileStream = File.Open(path, FileStreamOptions);
-            Init(PersistanceStream: PersistanceFileStream);
+        public InMemoryDatabase(string path, bool compressed = false) : this(File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read), compressed)
+        {
+            //var fileStreamOptions = new FileStreamOptions
+            //{
+            //    Access = FileAccess.ReadWrite,
+            //    Mode = FileMode.OpenOrCreate,
+            //    Share = FileShare.Read,
+            //    Options = FileOptions.SequentialScan | FileOptions.WriteThrough,
+            //    BufferSize = 4096,
+            //};
         }
 
-        public InMemoryDatabase(Stream? PersistanceStream)
+        
+        public InMemoryDatabase(Stream? PersistanceStream = null, bool compressed = false)
         {
+            IsCompressed = compressed;
             Init(PersistanceStream: PersistanceStream);
         }
 
-        public InMemoryDatabase()
-        {
-            Init(PersistanceStream: null);
-        }
-
-        private void Init(Stream PersistanceStream)
+        private void Init(Stream? PersistanceStream)
         {
             this.PersistanceStream = PersistanceStream;
 
-            if (PersistanceStream is not null)
+            if (PersistanceStream != null)
             {
                 // Only try to load if there's a plate to load from
                 Load();
@@ -64,24 +63,29 @@ namespace InMemoryDatabase
             if (Data is null)
             {
                 // Then assing a default value
-                Data = new List<DatabaseEntry<T>>();
+                Data = ArrayList.Synchronized(new List<DatabaseEntry<T>>()) as List<DatabaseEntry<T>>;
             }
         }
 
         #region CRUD
 
-        public T[] Find(Func<T, bool> filter)
+#warning am i overcomplicating myself by not using a simple List<T> ?
+        public T[] Find(Func<T?, bool> filter)
         {
             var rowsAffected = 0;
-            for (int i = 0; i < Data.Count; i++)
+
+            Parallel.For(0, Data.Count, () => 0, (i, loop, subtotal) =>
             {
                 var currentData = Data[i];
                 if (filter(currentData.Value))
                 {
                     currentData.Marked = true;
-                    rowsAffected++;
+                    subtotal++;
                 }
-            }
+                return subtotal;
+            },
+                (x) => Interlocked.Add(ref rowsAffected, x)
+            );
 
             using var memoryOwner = ResultPool.Rent(rowsAffected);
             var span = memoryOwner.Memory.Span;
@@ -99,8 +103,22 @@ namespace InMemoryDatabase
                 }
             }
 
-            return span[..rowsAffected].ToArray();
+            return span/*[..rowsAffected]*/.ToArray();
         }
+
+        //public List<T?> FindSimple(Func<T?, bool> filter)
+        //{
+        //    var results = new List<T?>();
+        //    for (int i = 0; i < Data.Count; i++)
+        //    {
+        //        var currentData = Data[i];
+        //        if (filter(currentData.Value))
+        //        {
+        //            results.Add(currentData.Value);
+        //        }
+        //    }
+        //    return results;
+        //}
 
         public void Add(T item)
         {
@@ -123,42 +141,48 @@ namespace InMemoryDatabase
             }
         }
 
-#warning improve the update methods?
-        public int UpdateWhere(Func<T, bool> filter, Action<T> updateAction)
+        public int CountWhere(Func<T?, bool> filter)
         {
             var rowsAffected = 0;
 
-            for (int i = 0; i < Data.Count; i++)
+            Parallel.For(0, Data.Count, () => 0, (i, loop, subtotal) =>
+            {
+                var currentData = Data[i];
+                if (filter(currentData.Value))
+                {
+                    subtotal++;
+                }
+                return subtotal;
+            },
+                (x) => Interlocked.Add(ref rowsAffected, x)
+            );
+
+            return rowsAffected;
+        }
+
+#warning improve the update methods?
+        public int UpdateWhere(Func<T?, bool> filter, Action<T?> updateAction)
+        {
+            var rowsAffected = 0;
+
+            Parallel.For(0, Data.Count, () => 0, (i, loop, subtotal) =>
             {
                 var currentData = Data[i];
                 if (filter(currentData.Value))
                 {
                     updateAction(currentData.Value);
-                    rowsAffected++;
+                    subtotal++;
                 }
-            }
+
+                return subtotal;
+            },
+                (x) => Interlocked.Add(ref rowsAffected, x)
+            );
 
             return rowsAffected;
         }
 
-        public int UpdateWhere(Func<T, bool> filter, Func<T, T> updateAction)
-        {
-            var rowsAffected = 0;
-
-            for (int i = 0; i < Data.Count; i++)
-            {
-                var currentData = Data[i];
-                if (filter(currentData.Value))
-                {
-                    currentData.Value = updateAction(currentData.Value);
-                    rowsAffected++;
-                }
-            }
-
-            return rowsAffected;
-        }
-
-        public int DeleteWhere(Func<T, bool> filter)
+        public int DeleteWhere(Func<T?, bool> filter)
         {
             var rowsAffected = 0;
 
@@ -183,23 +207,24 @@ namespace InMemoryDatabase
         #region Persistance
         public void Save()
         {
-            if (PersistanceStream is null)
+            if (PersistanceStream == null)
             {
                 throw new ArgumentNullException(nameof(PersistanceStream));
             }
-            PersistanceFileStream?.SetLength(0);
-            Export(PersistanceFileStream);
+
+            PersistanceStream.SetLength(0);
+            Export(PersistanceStream);
             PersistanceStream.Flush();
         }
 
         public void Load()
         {
-            if (PersistanceStream is null)
+            if (PersistanceStream == null)
             {
                 throw new ArgumentNullException(nameof(PersistanceStream));
             }
 
-            if (PersistanceFileStream.Length > 0)
+            if (PersistanceStream.Length > 0)
             {
                 Import(PersistanceStream);
             }
@@ -213,21 +238,23 @@ namespace InMemoryDatabase
         // At this point i'd rather write everything by hand...
         // Computers were a mistake
         // 
-        //
         // Total Hours Spent: 22
-        public void Export(Stream stream)
-        {
-            JsonSerializer.Serialize(stream, Data, JsonSerializerOptions);
-        }
-
         public string Export()
         {
             return JsonSerializer.Serialize(Data, JsonSerializerOptions);
         }
 
+        public void Export(Stream stream)
+        {
+            var targetStream = IsCompressed ? new GZipStream(stream, CompressionMode.Compress) : stream;
+
+            JsonSerializer.Serialize(targetStream, Data, JsonSerializerOptions);
+        }
+
         public void Import(Stream stream)
         {
-            Data = JsonSerializer.Deserialize<List<DatabaseEntry<T>>>(stream, JsonSerializerOptions);
+            var targetStream = IsCompressed ? new GZipStream(stream, CompressionMode.Decompress) : stream;
+            Data = ArrayList.Synchronized(JsonSerializer.Deserialize<List<DatabaseEntry<T>>>(targetStream, JsonSerializerOptions)) as List<DatabaseEntry<T>>;
         }
     }
     #endregion Persistance

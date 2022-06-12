@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -7,7 +9,7 @@ namespace InMemoryDatabase
 {
     public class DatabaseEntryConverter : JsonConverterFactory
     {
-        private static readonly Dictionary<Guid, JsonConverter> ConverterCache = new();
+        private static readonly Dictionary<Guid, JsonConverter> ConverterCache = new Dictionary<Guid, JsonConverter>();
 
         private static readonly Type TargetType = typeof(DatabaseEntry<>);
 
@@ -74,9 +76,7 @@ namespace InMemoryDatabase
             [Obsolete("Extremately slow if you use more than 2 million entries, need optimization")]
             public override void Write(Utf8JsonWriter writer, DatabaseEntry<T> value, JsonSerializerOptions options)
             {
-                JsonValue = JsonValue.Create(value.Value);
-                JsonValue.WriteTo(writer);
-                writer.Flush();
+                JsonSerializer.Serialize(writer, value.Value, options);
             }
         }
     }
