@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using GitHelper.Models;
 using Microsoft.Extensions.Logging;
 
 namespace GitHelper
@@ -25,6 +27,8 @@ namespace GitHelper
 
     public class GitHelpers
     {
+        private static readonly HttpClient HttpClient = new();
+
         private GitHelpersConfig Config { get; set; }
 
         public GitHelpers(GitHelpersConfig config)
@@ -94,6 +98,49 @@ namespace GitHelper
             {
                 throw new NotImplementedException($"'{nameof(OpenUrlInBrowser)}' is not implemented for '{RuntimeInformation.OSDescription}'");
             }
+        }
+
+        public static async Task<Release?> CheckLastestAvailableRelease(string url, Branch branch)
+        {
+            var Response = await HttpClient.GetStringAsync(url);
+            var versiones = JsonSerializer.Deserialize<List<Release>>(Response);
+
+            if (versiones == null || versiones.Count < 1)
+            {
+                return null;
+            }
+
+            Release lastest;
+
+            // Any will do
+            if (branch == Branch.Prerelease)
+            {
+                return versiones[0];
+            }
+
+            // filter to only stable versions
+            for (int index = 0; index < versiones.Count; index++)
+            {
+                var c = versiones[index];
+                if (!c.Prerelease)
+                {
+                    return c;
+                }
+            }
+
+            // no version found
+            return null;
+        }
+
+        public static async Task<string?> GetDownloadUrl(Release release)
+        {
+            var assets = release.Assets;
+            if (assets == null || assets.Count < 1)
+            {
+                return null;
+            }
+
+#error check platform specific (?)
         }
     }
 }

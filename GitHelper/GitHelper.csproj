@@ -9,6 +9,7 @@
 		<BaseVersion>0.0.0.1</BaseVersion>
 		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
 		<Version>$(BaseVersion)-$(Now)-alpha</Version>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
