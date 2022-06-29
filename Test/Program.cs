@@ -1,22 +1,7 @@
-﻿//#define LoadNewData
-using CsvToObjects;
-using Extensions.Reflection;
-using MoeBooruApi;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using MathHelpers;
-using InMemoryDatabase;
-using System.Globalization;
-using SaucenaoApi;
+﻿using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using SaucenaoApi;
 
 namespace Test
 {

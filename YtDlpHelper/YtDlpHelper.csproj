@@ -18,8 +18,4 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
 	</ItemGroup>
 
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="echo test" />
-	</Target>
-
 </Project>

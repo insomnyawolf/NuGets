@@ -10,11 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CsvToObjects\CsvToObjects.csproj" />
-    <ProjectReference Include="..\ExtensionsReflection\ReflectionExtensions.csproj" />
-    <ProjectReference Include="..\InMemoryDatabase\InMemoryDatabase.csproj" />
-    <ProjectReference Include="..\MathHelpers\MathHelpers.csproj" />
-    <ProjectReference Include="..\MoeBooruAPI\MoeBooruApi.csproj" />
     <ProjectReference Include="..\SaucenaoApi\SaucenaoApi.csproj" />
   </ItemGroup>
 

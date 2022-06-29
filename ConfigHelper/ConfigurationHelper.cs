@@ -18,12 +18,13 @@ namespace ConfigHelper
                 AllowTrailingCommas = true,
                 DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
                 DefaultIgnoreCondition = JsonIgnoreCondition.Never,
-                IgnoreReadOnlyFields = true,
-                IgnoreReadOnlyProperties = true,
+                IgnoreReadOnlyFields = false,
+                IgnoreReadOnlyProperties = false,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 ReadCommentHandling = JsonCommentHandling.Skip,
                 WriteIndented = true,
                 IncludeFields = true,
+                
             };
 
             JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -63,6 +64,11 @@ namespace ConfigHelper
             Load();
 
             FileWatch();
+        }
+
+        public bool IsEmpty()
+        {
+            return FileStream.Length < 3;
         }
 
         private void FileWatch()
