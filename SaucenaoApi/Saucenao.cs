@@ -5,23 +5,23 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SaucenaoApi
+namespace SaucenaoSearch
 {
     // Replacing api with web scrapping
 
     // https://saucenao.com/user.php?page=search-api
 
-    public class Saucenao
+    public class SaucenaoWebInterface
     {
         private const string SaucenaoHost = "http://saucenao.com/search.php";
         private readonly HttpClient HttpClient;
 
-        public Saucenao(HttpClient HttpClient)
+        public SaucenaoWebInterface(HttpClient HttpClient)
         {
             this.HttpClient = HttpClient;
         }
 
-        public Saucenao() : this(new HttpClient())
+        public SaucenaoWebInterface() : this(new HttpClient())
         {
 
         }
@@ -107,7 +107,8 @@ namespace SaucenaoApi
                             {
                                 if (infoNode.HasClass("resultsimilarityinfo"))
                                 {
-                                    parsedResponse.Similarity = infoNode.InnerText;
+                                    var text = infoNode.InnerText.Replace("%", "");
+                                    parsedResponse.Similarity = float.Parse(text);
                                     continue;
                                 }
 
@@ -204,7 +205,7 @@ namespace SaucenaoApi
 
     public class SaucenaoResponse
     {
-        public string Similarity { get; set; }
+        public float Similarity { get; set; }
         public List<string> Url { get; set; } = new List<string>();
         public string SourceUrl { get; set; }
         public string Title { get; set; }
