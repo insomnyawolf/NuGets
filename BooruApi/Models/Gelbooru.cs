@@ -106,14 +106,14 @@ namespace BooruApi.Models
         public string HasChildren { get; set; }
     }
 
-    public class ApiResponse<T>
+    public class ApiResponsePost<T>
     {
 
         [JsonPropertyName("@attributes")]
         public Attributes Attributes { get; set; }
 
         [JsonPropertyName("post")]
-        public IList<T> Items { get; set; } = Array.Empty<T>();
+        public IList<Post> Posts { get; set; } = Array.Empty<Post>();
     }
 
     public class AutoCompleteResponse

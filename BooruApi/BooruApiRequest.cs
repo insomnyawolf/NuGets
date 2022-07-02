@@ -75,17 +75,18 @@ namespace BooruApi
             return JsonSerializer.Deserialize<List<AutoCompleteResponse>>(stream);
         }
 
-        public async Task<ApiResponse<Post>> GetPosts(string tags)
+        public async Task<ApiResponsePost<Post>> GetPosts(string tags)
         {
             var requestAddress = GetEndpointUrl(BooruApiEndpoint.PostsApi) + tags;
 
             var stream = await this.HttpClient.GetStreamAsync(requestAddress);
 
-            var result = JsonSerializer.Deserialize<ApiResponse<Post>>(stream);
+            var result = JsonSerializer.Deserialize<ApiResponsePost<Post>>(stream);
 
-            foreach (var item in result.Items)
+            for (int i = 0; i < result.Posts.Count; i++)
             {
-                item.PostUrl = GetEndpointUrl(BooruApiEndpoint.PostsPage) + item.Id;
+                var post = result.Posts[i];
+                post.PostUrl = GetEndpointUrl(BooruApiEndpoint.PostsPage) + post.Id;
             }
 
             return result;
@@ -96,7 +97,7 @@ namespace BooruApi
             return BaseAddress + Endpoints[ServerType][Endpoint];
         }
 
-        public async Task<ApiResponse<Post>> GetPosts(BooruPostRequestHelper requestHelper)
+        public async Task<ApiResponsePost<Post>> GetPosts(BooruPostRequestHelper requestHelper)
         {
             return await GetPosts(requestHelper.GetRequestQuery());
         }
