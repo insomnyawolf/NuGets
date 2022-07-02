@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BooruApi\BooruApi.csproj" />
     <ProjectReference Include="..\Extensions\Extensions.csproj" />
     <ProjectReference Include="..\SaucenaoApi\SaucenaoSearch.csproj" />
   </ItemGroup>
