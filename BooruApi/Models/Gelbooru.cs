@@ -15,7 +15,7 @@ namespace BooruApi.Models
         public int Count { get; set; }
     }
 
-    public class Post
+    public partial class Post
     {
 
         [JsonPropertyName("id")]
@@ -106,15 +106,32 @@ namespace BooruApi.Models
         public string HasChildren { get; set; }
     }
 
-    public class ApiResponse
+    public class ApiResponse<T>
     {
 
         [JsonPropertyName("@attributes")]
         public Attributes Attributes { get; set; }
 
         [JsonPropertyName("post")]
-        public IList<Post> Post { get; set; }
+        public IList<T> Items { get; set; } = Array.Empty<T>();
     }
 
+    public class AutoCompleteResponse
+    {
 
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
+
+        [JsonPropertyName("label")]
+        public string Label { get; set; }
+
+        [JsonPropertyName("value")]
+        public string Value { get; set; }
+
+        [JsonPropertyName("post_count")]
+        public string PostCount { get; set; }
+
+        [JsonPropertyName("category")]
+        public string Category { get; set; }
+    }
 }
