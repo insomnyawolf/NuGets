@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using System;
-using Extensions;
-using SaucenaoSearch;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using BooruApi;
 
 namespace Test
@@ -24,29 +23,63 @@ namespace Test
             //    }
             //}
 
-            var booru = new BooruApiRequester(BooruServer.Gelbooru);
+            var booru = new GelbooruApi();
 
-            var autocomplete = await booru.GetAutoComplete("vermei");
+            //var autocomplete = await booru.GetAutoComplete("vermei");
 
-            var posts = await booru.GetPosts("vermeil_(arknights)");
+            //var posts = await booru.GetPosts("vermeil_(arknights)");
 
             var requestHelper = new GelbooruPostQueryHelper()
             {
-                Tags = new System.Collections.Generic.List<string>()
+                Tags = new List<Tag>()
                 {
-                    "vermeil_(arknights)"
+                    new Tag()
+                    {
+                       Value = "mostima_(arknights)",
+                    }
                 },
                 Limit = 1,
                 Page = 0,
-                Random = true,
-                Rating = BooruPostRating.Safe,
+                Score = new Score()
+                {
+                    CompareType = CompareType.EqualGreater,
+                    Value = 75,
+                },
+                Sort = new Sort()
+                {
+                    Type = SortType.Random,
+                    RandomSeed = 300,
+                },
+                Size = new Size()
+                {
+                    Width = new RangeValue()
+                    {
+                        CompareType = CompareType.EqualGreater,
+                        Value = 1920,
+                    },
+                    Height = new RangeValue()
+                    {
+                        CompareType = CompareType.EqualGreater,
+                        Value = 1080,
+                    }
+                },
+                Rating = new List<RatingGelbooru>()
+                {
+                    new RatingGelbooru()
+                    {
+                        PostRating = GelbooruPostRating.Explicit,
+                        SearchType = SearchType.Exclude,
+                    }
+                },
             };
 
-            var posts1 = await booru.GetPosts(requestHelper);
+            var query = requestHelper.ToString();
 
-            var posts2 = await booru.GetPosts(requestHelper);
+            var posts1 = booru.GetPostsUrl(requestHelper);
 
-            var posts3 = await booru.GetPosts(requestHelper);
+            Console.WriteLine(posts1);
+
+            //var posts2 = await booru.GetPostsAsync(requestHelper);
         }
     }
 }

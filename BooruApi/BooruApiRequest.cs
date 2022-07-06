@@ -4,80 +4,55 @@ using System.Text.Json;
 namespace BooruApi
 {
     // https://github.com/insomnyawolf/Gonnachan/blob/master/const.go
-    public class BooruApiRequester
+    public abstract class ApiBase<T>
     {
+        public abstract string BaseUrl { get; }
+        public abstract string PostApi { get; }
+        public abstract string PostPage { get; }
+        public abstract string AutoComplete { get; }
         private HttpClient HttpClient { get; set; }
-        private string BaseAddress { get; set; }
-        private BooruServer ServerType { get; set; }
 
-        private static readonly Dictionary<BooruServer, string> ServerAdresses = new()
+        //private static readonly Dictionary<BooruServer, string> ServerAdresses = new()
+        //{
+        //    { BooruServer.Safebooru, "https://safebooru.org/index.php?page=dapi&q=index&json=1&s=post&" },
+        //    { BooruServer.Rule34, "https://rule34.xxx/index.php?page=dapi&q=index&json=1&s=post&" },
+        //    { BooruServer.TheBigImageboard, "https://tbib.org/index.php?page=dapi&q=index&json=1&s=post&" },
+        //    { BooruServer.Konachan, "https://konachan.com/post.json?" },
+        //    { BooruServer.Yandere, "https://yande.re/post.json?" },
+        //};
+
+        public ApiBase(HttpClient HttpClient = null)
         {
-            { BooruServer.Gelbooru, "https://gelbooru.com/index.php" },
-            { BooruServer.Safebooru, "https://safebooru.org/index.php?page=dapi&q=index&json=1&s=post&" },
-            { BooruServer.Rule34, "https://rule34.xxx/index.php?page=dapi&q=index&json=1&s=post&" },
-            { BooruServer.TheBigImageboard, "https://tbib.org/index.php?page=dapi&q=index&json=1&s=post&" },
-            { BooruServer.Konachan, "https://konachan.com/post.json?" },
-            { BooruServer.Yandere, "https://yande.re/post.json?" },
-        };
-
-        private static readonly Dictionary<BooruServer, BooruServer> ServerTypes = new()
-        {
-            { BooruServer.Gelbooru, BooruServer.Gelbooru },
-            { BooruServer.Safebooru, BooruServer.Gelbooru },
-            { BooruServer.Rule34, BooruServer.Gelbooru },
-            { BooruServer.TheBigImageboard, BooruServer.Gelbooru },
-            { BooruServer.Konachan, BooruServer.Konachan },
-            { BooruServer.Yandere, BooruServer.Konachan },
-        };
-
-        private static readonly Dictionary<BooruServer, Dictionary<BooruApiEndpoint, string>> Endpoints = new();
-
-        static BooruApiRequester()
-        {
-            Endpoints.Add(BooruServer.Gelbooru, new Dictionary<BooruApiEndpoint, string>
-            {
-                { BooruApiEndpoint.PostsApi, "?page=dapi&q=index&json=1&s=post&tags=" },
-                { BooruApiEndpoint.PostsPage, "?page=post&s=view&id=" },
-                { BooruApiEndpoint.AutoComplete, "?page=autocomplete2&type=tag_query&term=" }
-            });
+            this.HttpClient = HttpClient ?? new HttpClient();
         }
 
-
-
-        public BooruApiRequester(BooruServer server, HttpClient HttpClient = null) : this(ServerAdresses[server], ServerTypes[server], HttpClient)
+        public string GetAutoCompleteUrl(string input)
         {
-
+            return BaseUrl + AutoComplete + input;
         }
 
-        public BooruApiRequester(string BaseAddress, BooruServer ServerType, HttpClient HttpClient = null)
+        public async Task<List<AutoCompleteResponse>> GetAutoCompleteAsync(string input)
         {
-            if (this.HttpClient == null)
-            {
-                this.HttpClient = new HttpClient();
-            }
-            else
-            {
-                this.HttpClient = HttpClient;
-            }
-
-            this.BaseAddress = BaseAddress;
-            this.ServerType = ServerType;
-        }
-
-//#warning GetStringAsync to GetStreamAsync when working
-
-        public async Task<List<AutoCompleteResponse>> GetAutoComplete(string input)
-        {
-            var requestAddress = GetEndpointUrl(BooruApiEndpoint.AutoComplete) + input;
+            var requestAddress = GetAutoCompleteUrl(input);
 
             var stream = await this.HttpClient.GetStreamAsync(requestAddress);
 
             return JsonSerializer.Deserialize<List<AutoCompleteResponse>>(stream);
         }
 
-        public async Task<ApiResponsePost<Post>> GetPosts(string tags)
+        public string GetPostsUrl(string tags)
         {
-            var requestAddress = GetEndpointUrl(BooruApiEndpoint.PostsApi) + tags;
+            return BaseUrl + PostApi + tags;
+        }
+
+        public string GetPostsUrl(T tags)
+        {
+            return GetPostsUrl(tags.ToString());
+        }
+
+        public async Task<ApiResponsePost<Post>> GetPostsAsync(string tags)
+        {
+            var requestAddress = GetPostsUrl(tags);
 
             var stream = await this.HttpClient.GetStreamAsync(requestAddress);
 
@@ -86,96 +61,235 @@ namespace BooruApi
             for (int i = 0; i < result.Posts.Count; i++)
             {
                 var post = result.Posts[i];
-                post.PostUrl = GetEndpointUrl(BooruApiEndpoint.PostsPage) + post.Id;
+                post.PostUrl = BaseUrl + PostPage + post.Id;
             }
 
             return result;
         }
 
-        private string GetEndpointUrl(BooruApiEndpoint Endpoint)
+        public async Task<ApiResponsePost<Post>> GetPostsAsync(T requestHelper)
         {
-            return BaseAddress + Endpoints[ServerType][Endpoint];
-        }
-
-        public async Task<ApiResponsePost<Post>> GetPosts(BooruPostRequestHelper requestHelper)
-        {
-            return await GetPosts(requestHelper.GetRequestQuery());
+            return await GetPostsAsync(requestHelper.ToString());
         }
     }
 
-    public abstract class BooruPostRequestHelper
+    public abstract class PostRequestHelper
     {
         // Page 0 exists
-        public int Page { get; set; } = 0;
-        public int Limit { get; set; } = 100;
-        public IEnumerable<string> Tags { get; set; }
-        public bool Random { get; set; } = false;
-        public BooruPostRating Rating { get; set; } = BooruPostRating.Any;
-
-        public abstract string GetRequestQuery();
-    }
-
-    public class GelbooruPostQueryHelper : BooruPostRequestHelper
-    {
-        public override string GetRequestQuery()
+        public virtual int Page { get; set; } = 0;
+        public virtual int Limit { get; set; } = 100;
+        public virtual IEnumerable<Tag> Tags { get; set; }
+        public virtual Sort? Sort { get; set; }
+        public virtual RangeValue? Score { get; set; }
+        public virtual Size? Size { get; set; }
+        public virtual IEnumerable<Rating> Rating { get; set; }
+        public override string ToString()
         {
-            var tags = string.Join('+', Tags);
+            var tags = $"&pid={Page}&limit={Limit}&tags=";
 
-            if (Random)
+            if (Tags != null)
             {
-                tags += "+sort:random";
+                tags += string.Join(string.Empty, Tags);
             }
 
-            switch (Rating)
+            if (Sort != null)
             {
-                case BooruPostRating.Any:
-                    // No need to do anything
-                    break;
-                case BooruPostRating.Safe:
-                    tags += "+rating:safe";
-                    break;
-                case BooruPostRating.SafeQuestionable:
-                    tags += "-rating:explicit";
-                    break;
-                case BooruPostRating.Questionable:
-                    tags += "+rating:questionable";
-                    break;
-                case BooruPostRating.QuestionableExplicit:
-                    tags += "-rating:safe";
-                    break;
-                case BooruPostRating.Explicit:
-                    tags += "+rating:explicit";
-                    break;
+                tags += Sort;
             }
 
-            return $"{tags}&pid={Page}&limit={Limit}";
+            if (Score != null)
+            {
+                tags += Score;
+            }
+
+            if (Size != null)
+            {
+                tags += Size;
+            }
+
+            if (Rating != null)
+            {
+                tags += string.Join(string.Empty, Rating);
+            }
+
+            return tags;
         }
     }
 
-    public enum BooruPostRating
+    public class Tag : SearchItem
     {
-        Any,
+        public virtual string Value { get; set; }
+        public override SearchType SearchType { get; set; } = SearchType.Include;
+
+        public override string ToString()
+        {
+            return base.ToString() + Value;
+        }
+    }
+
+    public class Score : RangeValue
+    {
+        public override string ToString()
+        {
+            return $"+score:{base.ToString()}";
+        }
+    }
+
+    public class Size
+    {
+        public virtual RangeValue Width { get; set; }
+        public virtual RangeValue Height { get; set; }
+
+        public override string ToString()
+        {
+            var value = "";
+
+            if (Width != null)
+            {
+                value += $"+width:{Width}";
+            }
+
+            if (Height != null)
+            {
+                value += $"+height:{Height}";
+            }
+
+            return value;
+        }
+    }
+
+    public class Sort
+    {
+        public virtual SortType Type { get; set; }
+        public virtual SortDirection Direction { get; set; }
+        public virtual int? RandomSeed { get; set; }
+
+        public override string ToString()
+        {
+            var result = "+sort:";
+
+            result += Type switch
+            {
+                SortType.Id => "id",
+                SortType.Score => "score",
+                SortType.Rating => "rating",
+                SortType.User => "user",
+                SortType.Height => "height",
+                SortType.Width => "width",
+                SortType.Source => "source",
+                SortType.Updated => "updated",
+                SortType.Random => "random",
+            };
+
+            if (Type == SortType.Random && RandomSeed.HasValue)
+            {
+                result += $":{RandomSeed}";
+            }
+            else
+            {
+                result += Direction switch
+                {
+                    SortDirection.Asc => ":asc",
+                    SortDirection.Desc => ":desc",
+                };
+            }
+
+            return result;
+        }
+    }
+
+    public class RangeValue
+    {
+        public virtual CompareType CompareType { get; set; }
+        public virtual int Value { get; set; }
+
+        public override string ToString()
+        {
+            return CompareType switch
+            {
+                CompareType.Smaller => $"<{Value}",
+                CompareType.SmallerEqual => $"<={Value}",
+                CompareType.Equal => $"={Value}",
+                CompareType.EqualGreater => $">={Value}",
+                CompareType.Greater => $">{Value}",
+            };
+        }
+    }
+
+    public class Rating : SearchItem
+    {
+        public virtual PostRating PostRating { get; set; }
+        public virtual SearchType SearchType { get; set; }
+
+        public override string ToString()
+        {
+            var rating = base.ToString();
+
+            rating += "rating:";
+
+            rating += PostRating switch
+            {
+                PostRating.Safe => "safe",
+                PostRating.Questionable => "questionable",
+                PostRating.Explicit => "explicit",
+            };
+
+            return rating;
+        }
+    }
+
+    public class SearchItem
+    {
+        public virtual SearchType SearchType { get; set; }
+
+        public override string ToString()
+        {
+            return SearchType switch
+            {
+                SearchType.Include => "+",
+                SearchType.Exclude => "-",
+            };
+        }
+    }
+
+    public enum CompareType
+    {
+        Smaller,
+        SmallerEqual,
+        Equal,
+        EqualGreater,
+        Greater,
+    }
+
+    public enum PostRating
+    {
         Safe,
-        SafeQuestionable,
         Questionable,
-        QuestionableExplicit,
         Explicit,
     }
 
-    public enum BooruApiEndpoint
+    public enum SortDirection
     {
-        PostsApi,
-        PostsPage,
-        AutoComplete,
+        Asc,
+        Desc,
     }
 
-    public enum BooruServer
+    public enum SortType
     {
-        Gelbooru,
-        Safebooru,
-        Rule34,
-        TheBigImageboard,
-        Konachan,
-        Yandere,
+        Id,
+        Score,
+        Rating,
+        User,
+        Height,
+        Width,
+        Source,
+        Updated,
+        Random,
+    }
+
+    public enum SearchType
+    {
+        Include,
+        Exclude,
     }
 }
