@@ -31,7 +31,7 @@
         }
     }
 
-    // do rating even work?
+    // do exclude rating even work?
     public class RatingGelbooru : Rating
     {
         new public virtual GelbooruPostRating PostRating { get; set; }
