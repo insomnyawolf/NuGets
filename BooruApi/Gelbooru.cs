@@ -10,6 +10,8 @@
         public override string PostPage => "?page=post&s=view&id=";
 
         public override string AutoComplete => "?page=autocomplete2&type=tag_query&term=";
+
+        public GelbooruApi(HttpClient HttpClient = null) : base (HttpClient) { }
     }
 
     public class GelbooruPostQueryHelper : PostRequestHelper
