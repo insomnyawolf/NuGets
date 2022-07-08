@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Extensions.StdOutput
+namespace Extensions
 {
     public static class ExtensionsStdOutput
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SortingAlgorithms
 {
-    public static class SelectionSort
+    public static partial class Sort
     {
-        public static void Sort<ItemType>(IList<ItemType> list, Func<ItemType, ItemType, bool> condition)
+        public static void SelectionSort<ItemType>(IList<ItemType> list, Func<ItemType, ItemType, bool> condition)
         {
             var currentOrderIndex = list.Count;
 

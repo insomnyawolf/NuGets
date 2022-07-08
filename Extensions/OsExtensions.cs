@@ -4,8 +4,25 @@ using System.Runtime.InteropServices;
 
 namespace Extensions
 {
-    public static class Os
+    public static class OsExtensions
     {
+        public static void ForceKill(this Process process)
+        {
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                Process.Start(new ProcessStartInfo("Taskkill", $"/T /F /PID {process.Id}") { UseShellExecute = false });
+            }
+            else if (Environment.OSVersion.Platform == PlatformID.Unix)
+            {
+                Process.Start(new ProcessStartInfo("kill", $"-s SIGKILL {process.Id}") { UseShellExecute = false });
+            }
+            else
+            {
+                // Unsupported
+                throw new Exception("Unsupportet platform (yet)");
+            }
+        }
+
         public static void OpenInBrowser(this Uri Uri)
         {
             var url = Uri.ToString();
@@ -25,23 +42,6 @@ namespace Extensions
             else
             {
                 Process.Start(url);
-            }
-        }
-
-        public static void ForceKillAsync(this Process process)
-        {
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                Process.Start(new ProcessStartInfo("Taskkill", $"/T /F /PID {process.Id}") { UseShellExecute = false });
-            }
-            else if (Environment.OSVersion.Platform == PlatformID.Unix)
-            {
-                Process.Start(new ProcessStartInfo("kill", $"-s SIGKILL {process.Id}") { UseShellExecute = false });
-            }
-            else
-            {
-                // Unsupported
-                throw new Exception("Unsupportet platform (yet)");
             }
         }
     }

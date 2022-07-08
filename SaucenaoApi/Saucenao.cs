@@ -16,14 +16,9 @@ namespace SaucenaoSearch
         private const string SaucenaoHost = "http://saucenao.com/search.php";
         private readonly HttpClient HttpClient;
 
-        public SaucenaoWebInterface(HttpClient HttpClient)
+        public SaucenaoWebInterface(HttpClient? HttpClient = null)
         {
-            this.HttpClient = HttpClient;
-        }
-
-        public SaucenaoWebInterface() : this(new HttpClient())
-        {
-
+            this.HttpClient = HttpClient ?? new HttpClient();
         }
 
         public async Task<List<SaucenaoResponse>> GetSauceAsync(Stream file, string filename)

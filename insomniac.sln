@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SortingAlgorithms", "Sortin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicIrcClient", "IrcClient\BasicIrcClient.csproj", "{B8B5F9B1-D41C-431C-9928-730AFD3311E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoeBooruApi", "MoeBooruAPI\MoeBooruApi.csproj", "{57A8D658-5828-4518-B983-7D602AA826D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoeBooruApi(Deprecated)", "MoeBooruAPI\MoeBooruApi(Deprecated).csproj", "{57A8D658-5828-4518-B983-7D602AA826D2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{408716EA-6454-4FDD-BE72-34FD781C3A4B}"
 EndProject

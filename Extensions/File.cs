@@ -1,29 +1,29 @@
 ﻿using System.IO;
 
-namespace Extensions.File
+namespace Extensions
 {
     public static class ExtensionsFile
     {
         public static bool FileExistWithAnyExtension(string path, string filename)
         {
-            var exists = false;
             var files = Directory.GetFiles(path);
-            foreach (var file in files)
+            for (int index = 0; index < files.Length; index++)
             {
+                var file = files[index];
                 if (filename == Path.GetFileNameWithoutExtension(file))
                 {
-                    exists = true;
-                    break;
+                    return true;
                 }
             }
-            return exists;
+            return false;
         }
 
         public static string? FileExistWithAnyExtensionGetName(string path, string filename)
         {
             var files = Directory.GetFiles(path);
-            foreach (var file in files)
+            for (int index = 0; index < files.Length; index++)
             {
+                var file = files[index];
                 if (filename == Path.GetFileNameWithoutExtension(file))
                 {
                     return file;

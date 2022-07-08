@@ -5,11 +5,12 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>$(SolutionName).$(AssemblyName)</PackageId>
-		<Now>$([System.DateTime]::Now.ToString("yyyyMMddhhmmss"))</Now>
-		<BaseVersion>0.0.0.1</BaseVersion>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+		<Now>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Now>
+		<BaseVersion>0.0.0.0</BaseVersion>
 		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
 		<Version>$(BaseVersion)-$(Now)-alpha</Version>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

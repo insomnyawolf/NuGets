@@ -11,7 +11,7 @@
 
         public override string AutoComplete => "?page=autocomplete2&type=tag_query&term=";
 
-        public GelbooruApi(HttpClient HttpClient = null) : base (HttpClient) { }
+        public GelbooruApi(HttpClient? HttpClient = null) : base (HttpClient) { }
     }
 
     public class GelbooruPostQueryHelper : PostRequestHelper

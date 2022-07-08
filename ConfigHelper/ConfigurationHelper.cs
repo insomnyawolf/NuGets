@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ConfigHelper
 {
-    public class ConfigurationHelper<T> where T : class, new()
+    public class ConfigurationHelper<T>
     {
         private static readonly JsonSerializerOptions JsonSerializerOptions;
 
@@ -142,7 +142,7 @@ namespace ConfigHelper
             Semaphore.Wait();
             if (Config is null)
             {
-                Config = new T();
+                Config = default;
             }
 
             if (!Directory.Exists(ConfigDirectory))
@@ -160,15 +160,8 @@ namespace ConfigHelper
             Logger?.LogInformation("Configuration Written");
         }
 
-        public void OverwriteCurrent(T newSettings = null)
+        public void OverwriteCurrent(T newSettings)
         {
-            Semaphore.Wait();
-
-            if (Config is null)
-            {
-                Config = new T();
-            }
-
             Config = newSettings;
         }
     }

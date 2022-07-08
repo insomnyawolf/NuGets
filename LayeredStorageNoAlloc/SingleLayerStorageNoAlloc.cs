@@ -1,28 +1,40 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace LayeredStorageNoAlloc
 {
-    public class SingleLayerStorageNoAlloc<TL1Key, TValue> where TL1Key : IEquatable<TL1Key> where TValue : class
+    public class SingleLayerStorageNoAlloc<TL1Key, TValue> where TL1Key : IEquatable<TL1Key>
     {
-        private readonly ArrayList Storage = ArrayList.Synchronized(new ArrayList());
+        private readonly List<SingleLayerEntry<TL1Key, TValue>> Storage = ArrayList.Synchronized(new List<SingleLayerEntry<TL1Key, TValue>>()) as List<SingleLayerEntry<TL1Key, TValue>>;
+
+        public virtual TValue this[TL1Key index]
+        {
+            get
+            {
+                if (TryGetValue(index, out var value))
+                {
+                    return value;
+                }
+                return default;
+            }
+
+            set
+            {
+                AddOrUpdate(index, value);
+            }
+        }
 
         public bool TryGetValue(TL1Key key1, out TValue value)
         {
             for (int i = 0; i < Storage.Count; i++)
             {
-                if (Storage[i] is SingleLayerEntry<TL1Key, TValue> currentValue)
+                var currentValue = Storage[i];
+
+                if (currentValue.K1.Equals(key1))
                 {
-                    if (currentValue.K1.Equals(key1))
-                    {
-                        value = currentValue.Value;
-                        return true;
-                    }
-                }
-                else
-                {
-                    // Should NEVER Execute this
-                    throw new Exception();
+                    value = currentValue.Value;
+                    return true;
                 }
             }
 
@@ -30,47 +42,19 @@ namespace LayeredStorageNoAlloc
             return false;
         }
 
-        // Makes no sense
-        //public List<TValue> GetAll(TL1Key key)
-        //{
-        //    var result = new List<TValue>();
-        //    for (int i = 0; i < Storage.Count; i++)
-        //    {
-        //        if (Storage[i] is SingleLayerEntry<TL1Key, TValue> currentValue)
-        //        {
-        //            if (currentValue.K1.Equals(key))
-        //            {
-        //                result.Add(currentValue.Value);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            // Should NEVER Execute this
-        //            throw new Exception();
-        //        }
-        //    }
-        //    return result;
-        //}
-
-
         public void AddOrUpdate(TL1Key key1, TValue value)
         {
             for (int i = 0; i < Storage.Count; i++)
             {
-                if (Storage[i] is SingleLayerEntry<TL1Key, TValue> currentValue)
+                var currentValue = Storage[i];
+
+                if (currentValue.K1.Equals(key1))
                 {
-                    if (currentValue.K1.Equals(key1))
-                    {
-                        currentValue.Value = value;
-                        Storage[i] = currentValue;
-                        return;
-                    }
+                    currentValue.Value = value;
+                    Storage[i] = currentValue;
+                    return;
                 }
-                else
-                {
-                    // Should NEVER Execute this
-                    throw new Exception();
-                }
+
             }
 
             Storage.Add(new SingleLayerEntry<TL1Key, TValue>()
@@ -84,24 +68,24 @@ namespace LayeredStorageNoAlloc
         {
             for (int i = 0; i < Storage.Count; i++)
             {
-                if (Storage[i] is SingleLayerEntry<TL1Key, TValue> currentValue)
+                var currentValue = Storage[i];
+
+                if (currentValue.K1.Equals(key1))
                 {
-                    if (currentValue.K1.Equals(key1))
-                    {
-                        value = currentValue.Value;
-                        Storage.RemoveAt(i);
-                        return true;
-                    }
+                    value = currentValue.Value;
+                    Storage.RemoveAt(i);
+                    return true;
                 }
-                else
-                {
-                    // Should NEVER Execute this
-                    throw new Exception();
-                }
+
             }
 
             value = default;
             return false;
+        }
+
+        public List<SingleLayerEntry<TL1Key,TValue>> ToList()
+        {
+            return Storage;
         }
     }
 }

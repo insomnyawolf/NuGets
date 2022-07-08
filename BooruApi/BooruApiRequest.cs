@@ -21,7 +21,7 @@ namespace BooruApi
         //    { BooruServer.Yandere, "https://yande.re/post.json?" },
         //};
 
-        public ApiBase(HttpClient HttpClient = null)
+        public ApiBase(HttpClient? HttpClient = null)
         {
             this.HttpClient = HttpClient ?? new HttpClient();
         }

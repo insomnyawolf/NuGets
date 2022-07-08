@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Globalization;
 using System.Threading;
 
-namespace Extensions.Reflection
+namespace Extensions
 {
     // Since the code is not as beautiful as i would like, enjoy this ascii art
     //
