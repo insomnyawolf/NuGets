@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace LayeredStorageNoAlloc
 {
     public class SingleLayerStorageNoAlloc<TL1Key, TValue> where TL1Key : IEquatable<TL1Key>
     {
-        private readonly List<SingleLayerEntry<TL1Key, TValue>> Storage = ArrayList.Synchronized(new List<SingleLayerEntry<TL1Key, TValue>>()) as List<SingleLayerEntry<TL1Key, TValue>>;
-
+        private readonly IList<SingleLayerEntry<TL1Key, TValue>> Storage = Unsafe.As<IList<SingleLayerEntry<TL1Key, TValue>>>(ArrayList.Synchronized(new List<SingleLayerEntry<TL1Key, TValue>>()));
         public virtual TValue this[TL1Key index]
         {
             get
@@ -83,7 +83,7 @@ namespace LayeredStorageNoAlloc
             return false;
         }
 
-        public List<SingleLayerEntry<TL1Key,TValue>> ToList()
+        public IList<SingleLayerEntry<TL1Key,TValue>> ToList()
         {
             return Storage;
         }
