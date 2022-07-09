@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace LayeredStorageNoAlloc
+namespace LayeredStorageNoAlloc.Generic
 {
     public class DoubleLayerStorageNoAlloc<TL1Key, TL2Key, TValue> where TL1Key : IEquatable<TL1Key> where TL2Key : IEquatable<TL2Key> where TValue : class
     {

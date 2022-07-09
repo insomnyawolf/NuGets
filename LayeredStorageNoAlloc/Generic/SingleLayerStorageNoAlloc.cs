@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace LayeredStorageNoAlloc
+namespace LayeredStorageNoAlloc.Generic
 {
     public class SingleLayerStorageNoAlloc<TL1Key, TValue> where TL1Key : IEquatable<TL1Key>
     {

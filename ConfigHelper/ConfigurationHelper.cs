@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ConfigHelper
 {
-    public class ConfigurationHelper<T>
+    public class ConfigurationHelper<T> where T : new()
     {
         private static readonly JsonSerializerOptions JsonSerializerOptions;
 
@@ -142,7 +142,7 @@ namespace ConfigHelper
             Semaphore.Wait();
             if (Config is null)
             {
-                Config = default;
+                Config = new T();
             }
 
             if (!Directory.Exists(ConfigDirectory))
