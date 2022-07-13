@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Globalization;
-using System.Threading;
+using TypeConverterHelper;
 
 namespace Extensions
 {
@@ -22,15 +21,6 @@ namespace Extensions
     //<__________\______)\__)
     public static class ExtensionsReflection
     {
-        internal static readonly Type TypeInt = typeof(int);
-        internal static readonly Type TypeFloat = typeof(float);
-        internal static readonly Type TypeDouble = typeof(double);
-        internal static readonly Type TypeDecimal = typeof(decimal);
-        internal static readonly Type TypeBool = typeof(bool);
-        internal static readonly Type TypeString = typeof(string);
-        internal static readonly Type TypeDateTime = typeof(DateTime);
-        internal static readonly Type TypeTimeSpan = typeof(TimeSpan);
-        internal static readonly Type TypeNullable = typeof(Nullable<>);
 
         public static TypeConversionConfig TypeConversionConfig = new TypeConversionConfig();
         /// <summary>
@@ -75,93 +65,20 @@ namespace Extensions
                 return input;
             }
 
-            string inputStr;
+            string inputStr = input switch
+            {
+                null => "null",
+                _ => input.ToString(),
+            };
 
-            if (input is null)
+            if (TypeConverter.ConvertTo(inputStr, convertType, out var result, typeConversionConfig))
             {
-                inputStr = "null";
-            }
-            else
-            {
-                inputStr = input.ToString();
-            }
-
-            if (string.Equals(inputStr, "null", StringComparison.OrdinalIgnoreCase))
-            {
-                if (type.IsClass || type.GetGenericTypeDefinition() == TypeNullable)
-                {
-                    return null;
-                }
-            }
-            else if (convertType == TypeString)
-            {
-                return inputStr;
-            }
-            else if (convertType == TypeInt)
-            {
-                bool Sucess = int.TryParse(s: inputStr, style: typeConversionConfig.NumberStyles, provider: typeConversionConfig.CultureInfo, result: out var Parsed);
-                if (Sucess)
-                {
-                    return Parsed;
-                }
-            }
-            else if (convertType == TypeFloat)
-            {
-                bool Sucess = float.TryParse(s: inputStr, style: typeConversionConfig.NumberStyles, provider: typeConversionConfig.CultureInfo, result: out var Parsed);
-                if (Sucess)
-                {
-                    return Parsed;
-                }
-            }
-            else if (convertType == TypeDouble)
-            {
-                bool Sucess = double.TryParse(s: inputStr, style: typeConversionConfig.NumberStyles, provider: typeConversionConfig.CultureInfo, result: out var Parsed);
-                if (Sucess)
-                {
-                    return Parsed;
-                }
-            }
-            else if (convertType == TypeDecimal)
-            {
-                bool Sucess = decimal.TryParse(s: inputStr, style: typeConversionConfig.NumberStyles, provider: typeConversionConfig.CultureInfo, result: out var Parsed);
-                if (Sucess)
-                {
-                    return Parsed;
-                }
-            }
-            else if (convertType == TypeBool)
-            {
-                bool Sucess = bool.TryParse(value: inputStr, result: out bool Parsed);
-                if (Sucess)
-                {
-                    return Parsed;
-                }
-            }
-            else if (convertType == TypeDateTime)
-            {
-                bool Sucess = DateTime.TryParseExact(s: inputStr, format: typeConversionConfig.DateTimeFormat, provider: typeConversionConfig.CultureInfo, style: typeConversionConfig.DateTimeStyles, result: out var Parsed);
-                if (Sucess)
-                {
-                    return Parsed;
-                }
-            }
-            else if (convertType == TypeTimeSpan)
-            {
-                bool Sucess = TimeSpan.TryParseExact(input: inputStr, format: typeConversionConfig.TimeSpanFormat, formatProvider: typeConversionConfig.CultureInfo, styles: typeConversionConfig.TimeSpanStyles, result: out var Parsed);
-                if (Sucess)
-                {
-                    return Parsed;
-                }
-            }
-            else
-            {
-                // Es de verdad necesario?
-                return Convert.ChangeType(input, convertType);
+                return result;
             }
 
             if (typeConversionConfig.AcceptLossyConversion)
             {
-                if (type.IsClass || type.GetGenericTypeDefinition() == TypeNullable)
+                if (type.IsClass)
                 {
                     return null;
                 }
@@ -180,14 +97,8 @@ namespace Extensions
         }
     }
 
-    public class TypeConversionConfig
+    public class TypeConversionConfig : TypeConverterSettings
     {
         public bool AcceptLossyConversion { get; set; } = false;
-        public string DateTimeFormat { get; set; } = "dd/MM/yyyy";
-        public DateTimeStyles DateTimeStyles { get; set; } = DateTimeStyles.AllowWhiteSpaces;
-        public string TimeSpanFormat { get; set; } = "c";
-        public TimeSpanStyles TimeSpanStyles { get; set; } = TimeSpanStyles.None;
-        public NumberStyles NumberStyles { get; set; } = NumberStyles.Any;
-        public CultureInfo CultureInfo { get; set; } = Thread.CurrentThread.CurrentCulture;
     }
 }
