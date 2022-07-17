@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using TypeConverterHelper;
 
@@ -100,5 +101,93 @@ namespace Extensions
     public class TypeConversionConfig : TypeConverterSettings
     {
         public bool AcceptLossyConversion { get; set; } = false;
+    }
+
+    public static class DelegateFactory
+    {
+        private static readonly Type TypeOfVoid = typeof(void);
+        private static readonly Type TypeOfObject = typeof(object);
+        private static readonly Type TypeOfObjectArray = typeof(object[]);
+
+        public delegate object ReflectedDelegate(object target, params object[] arguments);
+        //public delegate void ReflectedVoidDelegate(object target, params object[] arguments);
+
+        /// <summary>
+        /// Creates a LateBoundMethod delegate from a MethodInfo structure
+        /// Basically creates a dynamic delegate on the fly.
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public static ReflectedDelegate CreateReflectedDelegate(this MethodInfo method)
+        {
+            ParameterExpression instanceParameter = Expression.Parameter(TypeOfObject, "target");
+            ParameterExpression argumentsParameter = Expression.Parameter(TypeOfObjectArray, "arguments");
+
+            var instance = Expression.Condition(
+                Expression.Constant(method.IsStatic),
+                Expression.Constant(null),
+                Expression.Convert(instanceParameter, method.DeclaringType)
+                );
+
+            var call = Expression.Call(
+                instance,
+                method,
+                CreateParameterExpressions(method, argumentsParameter)
+            );
+
+            //if (method.ReturnType == TypeOfVoid)
+            //{
+            //    return Expression.Lambda<ReflectedVoidDelegate>(
+            //                call,
+            //                instanceParameter,
+            //                argumentsParameter
+            //            ).Compile();
+            //}
+            //else
+            //{
+            //    return Expression.Lambda<ReflectedDelegate>(
+            //                Expression.Convert(call, TypeOfObject),
+            //                instanceParameter,
+            //                argumentsParameter
+            //            ).Compile();
+            //}
+
+            if (method.ReturnType == TypeOfVoid)
+            {
+                return Expression.Lambda<ReflectedDelegate>(
+                            Expression.Block(call, Expression.Constant(null)),
+                            instanceParameter,
+                            argumentsParameter
+                        ).Compile();
+            }
+
+            return Expression.Lambda<ReflectedDelegate>(
+                        Expression.Convert(call, TypeOfObject),
+                        instanceParameter,
+                        argumentsParameter
+                    ).Compile();
+        }
+
+        /// <summary>
+        /// Creates a LateBoundMethod from type methodname and parameter signature that
+        /// is turned into a MethodInfo structure and then parsed into a dynamic delegate
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="methodName"></param>
+        /// <param name="parameterTypes"></param>
+        /// <returns></returns>
+        //public static object Create(Type type, string methodName, params Type[] parameterTypes)
+        //{
+        //    return type.GetMethod(methodName, parameterTypes).CreateReflectedDelegate();
+        //}
+
+        private static Expression[] CreateParameterExpressions(MethodInfo method, Expression argumentsParameter)
+        {
+            return method.GetParameters().Select((parameter, index) =>
+                Expression.Convert(
+                    Expression.ArrayIndex(argumentsParameter, Expression.Constant(index)),
+                    parameter.ParameterType)
+                ).ToArray();
+        }
     }
 }
