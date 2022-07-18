@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	  <PackageId>$(SolutionName).$(AssemblyName)</PackageId>
+
+	  <Now>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Now>
+	  <BaseVersion>0.0.0.0</BaseVersion>
+	  <AssemblyVersion>$(BaseVersion)</AssemblyVersion>
+	  <Version>$(BaseVersion)-$(Now)-alpha</Version>
   </PropertyGroup>
 
 </Project>
