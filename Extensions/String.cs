@@ -31,20 +31,20 @@ namespace Extensions
 
         public static string RemovePrefix(this string current, string prefix)
         {
-            if (!current.StartsWith(prefix))
+            if (current.StartsWith(prefix))
             {
-                return current;
+                return current.Substring(prefix.Length);
             }
-            return current[prefix.Length..];
+            return current;
         }
 
         public static string RemoveSuffix(this string current, string suffix)
         {
-            if (!current.EndsWith(suffix))
+            if (current.EndsWith(suffix))
             {
-                return current;
+                return current.Substring(0, current.Length - suffix.Length);
             }
-            return current[..suffix.Length];
+            return current;
         }
 
         public static bool StartsWith(this string current, string pattern, out string removedPattern)
@@ -59,6 +59,25 @@ namespace Extensions
             return true;
         }
 
+        public static string Padding(this string input, ushort minSize, char character = ' ', PaddingPosition position = PaddingPosition.Right)
+        {
+            if (position == PaddingPosition.Left)
+            {
+                while (input.Length < minSize)
+                {
+                    input = character + input;
+                }
+            }
+            else
+            {
+                while (input.Length < minSize)
+                {
+                    input += character;
+                }
+            }
+            return input;
+        }
+
         public static string ToJsonString(this object data)
         {
             return JsonSerializer.Serialize(data, JsonSerializerOptionsCache);
@@ -68,5 +87,11 @@ namespace Extensions
         {
             WriteIndented = true,
         };
+    }
+
+    public enum PaddingPosition
+    {
+        Left,
+        Right
     }
 }

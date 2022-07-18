@@ -30,7 +30,7 @@ namespace Extensions
             MemberwiseClone = Expression.Lambda<Func<object, object>>(body, p1).Compile();
         }
 
-        public static T DeepCopy<T>(this T original)
+        public static T DeepClone<T>(this T original)
         {
             var Visited = new Dictionary<object, object>(/*ReferenceEqualityComparer.Instance*/);
             var NonShallowFields = new Dictionary<Type, FieldInfo[]>();

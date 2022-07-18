@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using TypeConverterHelper;
 
 namespace Extensions
@@ -96,6 +97,24 @@ namespace Extensions
             var value = propType.ConvertToCompatibleType(data, typeConversionConfig);
             propInfo.SetValue(obj, value);
         }
+
+        public static bool IsAsyncMethod(this MethodInfo methodInfo)
+        {
+            // Obtain the custom attribute for the method.
+            if (methodInfo.GetCustomAttribute<AsyncStateMachineAttribute>() is null)
+            {
+                // Null is returned if the attribute isn't present for the method.
+                return false;
+            }
+            return true;
+        }
+
+        public static bool HasProperty(this object objectToCheck, string propertyName)
+        {
+            var type = objectToCheck.GetType();
+            return type.GetProperty(propertyName) != null;
+        }
+
     }
 
     public class TypeConversionConfig : TypeConverterSettings
@@ -106,10 +125,11 @@ namespace Extensions
     public static class DelegateFactory
     {
         private static readonly Type TypeOfVoid = typeof(void);
+        private static readonly Type TypeOfValueType = typeof(ValueType);
         private static readonly Type TypeOfObject = typeof(object);
         private static readonly Type TypeOfObjectArray = typeof(object[]);
 
-        public delegate object ReflectedDelegate(object target, params object[] arguments);
+        public delegate dynamic Lambda(object target, params object[] arguments);
         //public delegate void ReflectedVoidDelegate(object target, params object[] arguments);
 
         /// <summary>
@@ -125,7 +145,7 @@ namespace Extensions
 
             var instance = Expression.Condition(
                 Expression.Constant(method.IsStatic),
-                Expression.Constant(null),
+                Expression.Default(method.DeclaringType),
                 Expression.Convert(instanceParameter, method.DeclaringType)
                 );
 
@@ -135,37 +155,51 @@ namespace Extensions
                 CreateParameterExpressions(method, argumentsParameter)
             );
 
-            //if (method.ReturnType == TypeOfVoid)
-            //{
-            //    return Expression.Lambda<ReflectedVoidDelegate>(
-            //                call,
-            //                instanceParameter,
-            //                argumentsParameter
-            //            ).Compile();
-            //}
-            //else
-            //{
-            //    return Expression.Lambda<ReflectedDelegate>(
-            //                Expression.Convert(call, TypeOfObject),
-            //                instanceParameter,
-            //                argumentsParameter
-            //            ).Compile();
-            //}
+            var reflectedDelegate = new ReflectedDelegate()
+            {
+                IsStatic = method.IsStatic,
+                DeclaringType = method.DeclaringType,
+                IsGeneric = method.IsGenericMethod,
+            };
 
             if (method.ReturnType == TypeOfVoid)
             {
-                return Expression.Lambda<ReflectedDelegate>(
+                reflectedDelegate.ReturnType = ReturnType.Void;
+                reflectedDelegate.Lambda = Expression.Lambda<Lambda>(
                             Expression.Block(call, Expression.Constant(null)),
                             instanceParameter,
                             argumentsParameter
                         ).Compile();
             }
+            else if (method.ReturnType.IsValueType)
+            {
+                reflectedDelegate.ReturnType = ReturnType.VaueType;
+                reflectedDelegate.Lambda = Expression.Lambda<Lambda>(
+                            Expression.Convert(call, TypeOfValueType),
+                            instanceParameter,
+                            argumentsParameter
+                        ).Compile();
+            }
+            else
+            {
+                reflectedDelegate.ReturnType = ReturnType.Object;
+                reflectedDelegate.Lambda = Expression.Lambda<Lambda>(
+                            Expression.Convert(call, TypeOfObject),
+                            instanceParameter,
+                            argumentsParameter
+                        ).Compile();
+            }
 
-            return Expression.Lambda<ReflectedDelegate>(
-                        Expression.Convert(call, TypeOfObject),
-                        instanceParameter,
-                        argumentsParameter
-                    ).Compile();
+            return reflectedDelegate;
+        }
+
+        public class ReflectedDelegate
+        {
+            public Lambda Lambda { get; internal set; }
+            public ReturnType ReturnType { get; internal set; }
+            public bool IsStatic { get; internal set; }
+            public bool IsGeneric { get; internal set; }
+            public Type DeclaringType { get; set; }
         }
 
         /// <summary>
@@ -189,5 +223,12 @@ namespace Extensions
                     parameter.ParameterType)
                 ).ToArray();
         }
+    }
+
+    public enum ReturnType
+    {
+        Void,
+        VaueType,
+        Object
     }
 }
