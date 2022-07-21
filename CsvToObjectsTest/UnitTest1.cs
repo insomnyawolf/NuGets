@@ -1,5 +1,5 @@
 using CsvToObjects;
-using Extensions.Reflection;
+using Extensions;
 using NUnit.Framework;
 using System;
 using System.IO;
@@ -27,7 +27,7 @@ namespace CsvToObjectsTest
                     AcceptLossyConversion = false,
                     DateTimeFormat = "dd/MM/yyyy HH:mm:ss",
                     TimeSpanFormat = "c",
-                    CultureInfo = Thread.CurrentThread.CurrentCulture,
+                    IFormatProvider = Thread.CurrentThread.CurrentCulture,
                     NumberStyles = System.Globalization.NumberStyles.Any,
                     DateTimeStyles = System.Globalization.DateTimeStyles.AllowWhiteSpaces,
                     TimeSpanStyles = System.Globalization.TimeSpanStyles.None

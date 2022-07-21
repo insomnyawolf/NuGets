@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using CsvToObjects;
-using Extensions.Reflection;
+using Extensions;
 using InMemoryDatabase;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -42,7 +42,7 @@ namespace InMemoryDatabaseTest
                     AcceptLossyConversion = false,
                     DateTimeFormat = "dd/MM/yyyy HH:mm:ss",
                     TimeSpanFormat = "c",
-                    CultureInfo = Thread.CurrentThread.CurrentCulture,
+                    IFormatProvider = Thread.CurrentThread.CurrentCulture,
                     NumberStyles = System.Globalization.NumberStyles.Any,
                     DateTimeStyles = System.Globalization.DateTimeStyles.AllowWhiteSpaces,
                     TimeSpanStyles = System.Globalization.TimeSpanStyles.None

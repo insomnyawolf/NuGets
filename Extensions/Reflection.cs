@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using TypeConverterHelper;
+using static Extensions.DelegateFactory;
 
 namespace Extensions
 {
@@ -140,14 +141,25 @@ namespace Extensions
         /// <returns></returns>
         public static ReflectedDelegate CreateReflectedDelegate(this MethodInfo method)
         {
-            ParameterExpression instanceParameter = Expression.Parameter(TypeOfObject, "target");
-            ParameterExpression argumentsParameter = Expression.Parameter(TypeOfObjectArray, "arguments");
+            var instanceParameter = Expression.Parameter(TypeOfObject, "target");
+            var argumentsParameter = Expression.Parameter(TypeOfObjectArray, "arguments");
 
-            var instance = Expression.Condition(
-                Expression.Constant(method.IsStatic),
-                Expression.Default(method.DeclaringType),
-                Expression.Convert(instanceParameter, method.DeclaringType)
-                );
+            Expression instance;
+
+            if (method.IsStatic)
+            {
+                instance = null;
+            }
+            else
+            {
+                instance = Expression.Convert(instanceParameter, method.DeclaringType);
+            }
+
+            //var instance = Expression.Condition(
+            //    Expression.Constant(method.IsStatic),
+            //    Expression.Default(method.DeclaringType),
+            //    Expression.Convert(instanceParameter, method.DeclaringType)
+            //    );
 
             var call = Expression.Call(
                 instance,
@@ -160,6 +172,7 @@ namespace Extensions
                 IsStatic = method.IsStatic,
                 DeclaringType = method.DeclaringType,
                 IsGeneric = method.IsGenericMethod,
+                ParameterInfos = method.GetParameters(),
             };
 
             if (method.ReturnType == TypeOfVoid)
@@ -193,15 +206,6 @@ namespace Extensions
             return reflectedDelegate;
         }
 
-        public class ReflectedDelegate
-        {
-            public Lambda Lambda { get; internal set; }
-            public ReturnType ReturnType { get; internal set; }
-            public bool IsStatic { get; internal set; }
-            public bool IsGeneric { get; internal set; }
-            public Type DeclaringType { get; set; }
-        }
-
         /// <summary>
         /// Creates a LateBoundMethod from type methodname and parameter signature that
         /// is turned into a MethodInfo structure and then parsed into a dynamic delegate
@@ -223,6 +227,16 @@ namespace Extensions
                     parameter.ParameterType)
                 ).ToArray();
         }
+    }
+
+    public class ReflectedDelegate
+    {
+        public Lambda Lambda { get; internal set; }
+        public ReturnType ReturnType { get; internal set; }
+        public bool IsStatic { get; internal set; }
+        public bool IsGeneric { get; internal set; }
+        public Type DeclaringType { get; set; }
+        public ParameterInfo[] ParameterInfos { get; set; }
     }
 
     public enum ReturnType
