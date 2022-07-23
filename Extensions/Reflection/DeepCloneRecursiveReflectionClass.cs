@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace Extensions
 {
-    public static class CSharpExtensions
+    public static class DeepCloneRecursiveReflectionClass
     {
         private static readonly HashSet<Type> InmutableValueTypes = new HashSet<Type>()
         {
@@ -22,7 +22,7 @@ namespace Extensions
         };
 
         private static readonly Func<object, object> MemberwiseClone;
-        static CSharpExtensions()
+        static DeepCloneRecursiveReflectionClass()
         {
             MethodInfo cloneMethod = typeof(object).GetMethod("MemberwiseClone", BindingFlags.NonPublic | BindingFlags.Instance)!;
             var p1 = Expression.Parameter(typeof(object));
@@ -30,10 +30,10 @@ namespace Extensions
             MemberwiseClone = Expression.Lambda<Func<object, object>>(body, p1).Compile();
         }
 
-        public static T DeepClone<T>(this T original)
+        public static T DeepCloneRecursiveReflection<T>(this T original)
         {
             var Visited = new Dictionary<object, object>(/*ReferenceEqualityComparer.Instance*/);
-            var NonShallowFields = new Dictionary<Type, FieldInfo[]>();
+            var nonShallowFields = new Dictionary<Type, FieldInfo[]>();
 
             return (T)InternalCopy(original, true);
 
@@ -109,10 +109,10 @@ namespace Extensions
 
             FieldInfo[] CachedNonShallowFields(Type typeToReflect)
             {
-                if (!NonShallowFields.TryGetValue(typeToReflect, out var result))
+                if (!nonShallowFields.TryGetValue(typeToReflect, out var result))
                 {
-                    result = CSharpExtensions.NonShallowFields(typeToReflect).ToArray();
-                    NonShallowFields[typeToReflect] = result;
+                    result = NonShallowFields(typeToReflect).ToArray();
+                    nonShallowFields[typeToReflect] = result;
                 }
                 return result;
             }
