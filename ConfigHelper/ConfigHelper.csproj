@@ -3,14 +3,6 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<NoWin32Manifest>true</NoWin32Manifest>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>1.1.2</Version>
-		<PackageId>$(SolutionName).$(AssemblyName)</PackageId>
-
-		<Now>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Now>
-		<BaseVersion>0.0.0.0</BaseVersion>
-		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
-		<Version>$(BaseVersion)-$(Now)-alpha</Version>
 	</PropertyGroup>
 
 	<ItemGroup>

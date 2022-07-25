@@ -47,7 +47,7 @@ namespace OauthClientBase
             RefreshCredentials().GetAwaiter().GetResult();
         }
 
-        protected async Task<T> GetAsync<T>(string endpoint, Dictionary<string, object> values)
+        protected async Task<T> GetAsync<T>(string endpoint, Dictionary<string, object>? values = null)
         {
             // Format query parameters
             var requestUrl = $"{ApiUrl}{endpoint}";

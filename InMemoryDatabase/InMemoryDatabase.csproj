@@ -4,13 +4,6 @@
 		<Nullable>enable</Nullable>
 		<!-- Warning: Setting the following switch is *NOT* recommended in web apps. -->
 		<!--<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>-->
-		
-		<PackageId>$(SolutionName).$(AssemblyName)</PackageId>
-
-		<Now>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Now>
-		<BaseVersion>0.0.0.0</BaseVersion>
-		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
-		<Version>$(BaseVersion)-$(Now)-alpha</Version>
 	</PropertyGroup>
 	<ItemGroup>
 	  <PackageReference Include="System.Text.Json" Version="7.0.0-preview.3.22175.4" />

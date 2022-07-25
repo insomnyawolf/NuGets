@@ -1,15 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageId>$(SolutionName).$(AssemblyName)</PackageId>
-
-		<Now>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Now>
-		<BaseVersion>0.0.0.0</BaseVersion>
-		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
-		<Version>$(BaseVersion)-$(Now)-alpha</Version>
 	</PropertyGroup>
 
 </Project>

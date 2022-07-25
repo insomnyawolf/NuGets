@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
-using Extensions.CliArgumentBuilder;
-using OsuParsers.Decoders;
-using OsuApiHelper;
 using System.Text;
-using Microsoft.Data.Sqlite;
 using Extensions;
+using Extensions.CliArgumentBuilder;
+using Microsoft.Data.Sqlite;
+using OsuApiHelper;
+using OsuParsers.Decoders;
 
 namespace OsuDanserHelper
 {

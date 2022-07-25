@@ -2,13 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<PackageId>$(SolutionName).$(AssemblyName)</PackageId>
-
-		<Now>$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</Now>
-		<BaseVersion>0.0.0.0</BaseVersion>
-		<AssemblyVersion>$(BaseVersion)</AssemblyVersion>
-		<Version>$(BaseVersion)-$(Now)-alpha</Version>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

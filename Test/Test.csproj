@@ -7,12 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
+    <PackageReference Include="OsuApiHelper" Version="0.0.0-20220725154856" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BooruApi\BooruApi.csproj" />
-    <ProjectReference Include="..\Extensions\Extensions.csproj" />
-    <ProjectReference Include="..\SaucenaoApi\SaucenaoSearch.csproj" />
   </ItemGroup>
 
 </Project>
