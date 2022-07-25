@@ -16,23 +16,26 @@ namespace Test
                 Secret = "KmFIn67KoUzuLhL7PLRCsZGxKeR50JEjxcYWxQ28"
             });
 
-            var result = await osuApi.BeatmapsetDownload("405011");
+            var result2 = await osuApi.GetBeatmap("880496");
 
-        //var saucenao = new SaucenaoWebInterface();
+            var result = await osuApi.BeatmapsetDownload("880496");
 
-        //var data = await saucenao.GetSauceAsync("https://media.discordapp.net/attachments/639815892565229579/928656817511342090/4574.jpg?width=1141&height=671");
 
-        //foreach (var item in data)
-        //{
-        //    if (!string.IsNullOrEmpty(item.SourceUrl))
-        //    {
-        //        var uri = new Uri(item.SourceUrl);
-        //        uri.OpenInBrowser();
-        //        return;
-        //    }
-        //}
+            //var saucenao = new SaucenaoWebInterface();
 
-        var booru = new GelbooruApi();
+            //var data = await saucenao.GetSauceAsync("https://media.discordapp.net/attachments/639815892565229579/928656817511342090/4574.jpg?width=1141&height=671");
+
+            //foreach (var item in data)
+            //{
+            //    if (!string.IsNullOrEmpty(item.SourceUrl))
+            //    {
+            //        var uri = new Uri(item.SourceUrl);
+            //        uri.OpenInBrowser();
+            //        return;
+            //    }
+            //}
+
+            var booru = new GelbooruApi();
 
             //var autocomplete = await booru.GetAutoComplete("vermei");
 
