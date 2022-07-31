@@ -16,7 +16,7 @@ namespace OauthClientBase
         protected abstract string ApiUrl { get; }
         protected abstract string AuthUrl { get; }
 
-        private readonly HttpClient HttpClient = new HttpClient();
+        protected readonly HttpClient HttpClient = new HttpClient();
 
         private readonly OauthCredentials OauthCredentials;
         private string Token { get; set; }

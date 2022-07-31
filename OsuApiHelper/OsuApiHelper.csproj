@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="OauthClientBase" Version="0.0.0-20220725154917" />
+	  <PackageReference Include="OauthClientBase" Version="0.0.0-20220726124619" />
 	</ItemGroup>
 
 </Project>

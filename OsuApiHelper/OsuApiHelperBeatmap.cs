@@ -71,5 +71,17 @@ namespace OsuApiHelper
 
             return data;
         }
+
+        public async Task<Stream?> DownloadOsuFileAsync(uint beatmapId)
+        {
+            var response = await HttpClient.GetAsync($"http://osu.ppy.sh/osu/{beatmapId}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadAsStreamAsync();
+        }
     }
 }
