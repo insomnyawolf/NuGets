@@ -1,4 +1,6 @@
-﻿namespace LowLevelInputHooks.OsSpecific.Windows.Devices
+﻿using System;
+
+namespace LowLevelInputHooks.OsSpecific.Windows.Devices
 {
     internal enum RawKeyEvents
     {

@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Extensions;
 using Extensions.CliArgumentBuilder;
 using Microsoft.Data.Sqlite;

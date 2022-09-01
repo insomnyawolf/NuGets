@@ -2,12 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="OauthClientBase" Version="0.0.0-20220726124619" />
+	  <PackageReference Include="insomnyawolf.OauthClientBase" Version="0.0.220901.213045" />
 	</ItemGroup>
 
 </Project>

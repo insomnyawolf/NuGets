@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Authors>insomnyawolf</Authors>
+		<Description>Simple request library for booru based sites, currently supports konachan.com and yande.re</Description>
+	</PropertyGroup>
+
+</Project>

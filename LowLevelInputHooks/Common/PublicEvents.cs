@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 // Using this for now till i define real common ones
 using LowLevelInputHooks.OsSpecific.Windows.Devices;

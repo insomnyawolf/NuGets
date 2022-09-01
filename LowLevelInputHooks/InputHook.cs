@@ -1,4 +1,5 @@
 ﻿#define INPUTDEBUG
+using System;
 using System.Runtime.InteropServices;
 using LowLevelInputHooks.Common;
 using LowLevelInputHooks.OsSpecific.Windows;

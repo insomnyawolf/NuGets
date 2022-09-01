@@ -1,15 +1,22 @@
-﻿namespace BooruApi
+﻿using System.Collections.Generic;
+using System.Net.Http;
+
+namespace BooruApi
 {
     // https://gelbooru.com/index.php?page=wiki&s=list
     public class GelbooruApi : ApiBase<GelbooruPostQueryHelper>
     {
         public override string BaseUrl => "https://gelbooru.com/index.php";
 
-        public override string PostApi => "?page=dapi&q=index&json=1&s=post";
+        public string CommonApiUrl => BaseUrl + "?page=dapi&q=index&json=1";
 
-        public override string PostPage => "?page=post&s=view&id=";
+        public override string PostEndpoint => CommonApiUrl + "&s=post";
 
-        public override string AutoComplete => "?page=autocomplete2&type=tag_query&term=";
+        public override string TagEndpoint => CommonApiUrl + "&s=tag";
+
+        public override string PostPage => BaseUrl + "?page=post&s=view&id=";
+
+        public override string AutoComplete => BaseUrl + "?page=autocomplete2&type=tag_query&term=";
 
         public GelbooruApi(HttpClient? HttpClient = null) : base (HttpClient) { }
     }

@@ -1,0 +1,34 @@
+<!--
+https://github.com/dotnet/project-system/issues/4353
+Before build Directory.Build.props
+After build Directory.Builds.targets
+-->
+
+<Project>
+	<PropertyGroup>
+		<Deterministic>true</Deterministic>
+		
+		<Authors>insomnyawolf</Authors>
+		<RepositoryUrl>https://github.com/insomnyawolf/NuGets</RepositoryUrl>
+		<IntermediateOutputPath>..\Output\obj\</IntermediateOutputPath>
+		
+		<CompleteName>$(Authors).$(AssemblyName)</CompleteName>
+
+		<Title>$(CompleteName)</Title>
+		<PackageId>$(CompleteName)</PackageId>
+		<PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+	</PropertyGroup>
+
+	<!--you are a fucking genious https://github.com/dotnet/project-system/issues/1457#issuecomment-893677846-->
+	<Target Name="SetVersion" BeforeTargets="Build">
+		<PropertyGroup>
+			<!-- on build.props so they can be overriden per-projects
+			<MajorVersion>0</MajorVersion>
+			<MinorVersion>0</MinorVersion>
+			-->
+			<PatchVersion>$([System.DateTime]::UtcNow.ToString("yyMMdd"))</PatchVersion>
+			<BuildVersion  Condition="'$(DesignTimeBuild)' != 'true' OR '$(BuildingProject)' == 'true'">$([System.DateTime]::UtcNow.ToString("HHmmss"))</BuildVersion>
+			<PackageVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildVersion)</PackageVersion>
+		</PropertyGroup>
+	</Target>
+</Project>

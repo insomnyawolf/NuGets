@@ -1,4 +1,6 @@
-﻿namespace LowLevelInputHooks.Common
+﻿using System;
+
+namespace LowLevelInputHooks.Common
 {
     public abstract class InputHookBase : IDisposable
     {

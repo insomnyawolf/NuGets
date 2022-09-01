@@ -1,8 +1,13 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using GitHelper.Models;
 using Microsoft.Extensions.Logging;
 
@@ -140,7 +145,9 @@ namespace GitHelper
                 return null;
             }
 
-#error check platform specific (?)
+            return null;
+
+#warning check platform specific (?)
         }
     }
 }

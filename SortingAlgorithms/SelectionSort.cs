@@ -5,7 +5,7 @@ namespace SortingAlgorithms
 {
     public static partial class Sort
     {
-        public static void SelectionSort<ItemType>(IList<ItemType> list, Func<ItemType, ItemType, bool> condition)
+        public static void SelectionSort<ItemType>(this IList<ItemType> list, Func<ItemType, ItemType, bool> condition)
         {
             var currentOrderIndex = list.Count;
 
@@ -29,7 +29,7 @@ namespace SortingAlgorithms
                 // Prevents extra work when the selected position and the position being ordered are already in order
                 if (tempIndex < currentOrderIndex)
                 {
-                    var tempValue = list[tempIndex];
+                    ItemType tempValue = list[tempIndex];
                     list[tempIndex] = list[currentOrderIndex];
                     list[currentOrderIndex] = tempValue;
                 }

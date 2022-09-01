@@ -1,7 +1,7 @@
 ﻿using Extensions.Images;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-
+using System.Threading.Tasks;
 
 namespace OsuScoreThumbnailGenerator
 {

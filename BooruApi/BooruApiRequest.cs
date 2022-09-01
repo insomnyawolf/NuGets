@@ -1,5 +1,8 @@
 ﻿using BooruApi.Models;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace BooruApi
 {
@@ -7,7 +10,8 @@ namespace BooruApi
     public abstract class ApiBase<T>
     {
         public abstract string BaseUrl { get; }
-        public abstract string PostApi { get; }
+        public abstract string PostEndpoint { get; }
+        public abstract string TagEndpoint { get; }
         public abstract string PostPage { get; }
         public abstract string AutoComplete { get; }
         private HttpClient HttpClient { get; set; }
@@ -28,7 +32,7 @@ namespace BooruApi
 
         public string GetAutoCompleteUrl(string input)
         {
-            return BaseUrl + AutoComplete + input;
+            return AutoComplete + input;
         }
 
         public async Task<List<AutoCompleteResponse>> GetAutoCompleteAsync(string input)
@@ -42,7 +46,7 @@ namespace BooruApi
 
         public string GetPostsUrl(string tags)
         {
-            return BaseUrl + PostApi + tags;
+            return PostEndpoint + tags;
         }
 
         public string GetPostsUrl(T tags)
@@ -50,24 +54,24 @@ namespace BooruApi
             return GetPostsUrl(tags.ToString());
         }
 
-        public async Task<ApiResponsePost<Post>> GetPostsAsync(string tags)
+        public async Task<ApiResponsePost> GetPostsAsync(string tags)
         {
             var requestAddress = GetPostsUrl(tags);
 
             var stream = await this.HttpClient.GetStreamAsync(requestAddress);
 
-            var result = JsonSerializer.Deserialize<ApiResponsePost<Post>>(stream);
+            var result = JsonSerializer.Deserialize<ApiResponsePost>(stream);
 
             for (int i = 0; i < result.Posts.Count; i++)
             {
                 var post = result.Posts[i];
-                post.PostUrl = BaseUrl + PostPage + post.Id;
+                post.PostUrl = PostPage + post.Id;
             }
 
             return result;
         }
 
-        public async Task<ApiResponsePost<Post>> GetPostsAsync(T requestHelper)
+        public async Task<ApiResponsePost> GetPostsAsync(T requestHelper)
         {
             return await GetPostsAsync(requestHelper.ToString());
         }

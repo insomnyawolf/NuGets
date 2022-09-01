@@ -1,6 +1,11 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace OauthClientBase
@@ -16,17 +21,22 @@ namespace OauthClientBase
         protected abstract string ApiUrl { get; }
         protected abstract string AuthUrl { get; }
 
-        protected readonly HttpClient HttpClient = new HttpClient();
+        protected HttpClient HttpClient { get; }
 
         private readonly OauthCredentials OauthCredentials;
         private string Token { get; set; }
         private static bool JustRefreshed = false;
 
-        public OauthClient(OauthCredentials OauthCredentials)
+        public OauthClient(OauthCredentials OauthCredentials, HttpClient HttpClient = null)
         {
-            if (OauthCredentials == null)
+            if (OauthCredentials is null)
             {
                 throw new ArgumentNullException(nameof(OauthCredentials));
+            }
+
+            if (OauthCredentials is null)
+            {
+                this.HttpClient = new HttpClient();
             }
 
             if (string.IsNullOrEmpty(OauthCredentials.ClientId) && string.IsNullOrEmpty(OauthCredentials.Secret))
