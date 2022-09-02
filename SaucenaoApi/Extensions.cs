@@ -5,16 +5,25 @@ namespace SaucenaoSearch
 {
     public static class SaucenaoResponseExtensions
     {
-        public static SaucenaoResponse GetClosestMatch(this List<SaucenaoResponse> result)
+        public static SaucenaoResponse GetClosestMatch(this IList<SaucenaoResponse> result)
         {
             if (result.Count == 0)
             {
                 return null;
             }
 
-            var maxSimilarity = result.Max(item => item.Similarity);
+            var closestMatch = result[0];
 
-            return result.Find(item => item.Similarity == maxSimilarity);
+            for (int index = 1; index < result.Count; index++)
+            {
+                var current = result[index];
+                if (current.Similarity > closestMatch.Similarity)
+                {
+                    closestMatch = current;
+                }
+            }
+
+            return closestMatch;
         }
     }
 }

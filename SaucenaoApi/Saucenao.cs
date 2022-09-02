@@ -51,6 +51,7 @@ namespace SaucenaoSearch
             return req;
         }
 
+
         private async Task<List<SaucenaoResponse>> GetSauceAsync(HttpContent httpRequestMessage)
         {
             var response = await HttpClient.PostAsync(SaucenaoHost, httpRequestMessage);
@@ -92,118 +93,151 @@ namespace SaucenaoSearch
                         continue;
                     }
 
-                    var parsedResponse = new SaucenaoResponse();
+                    var result = ParseResult(tableNode);
 
-                    foreach (var groupInfoNode in tableNode.FirstChild.LastChild.ChildNodes)
-                    {
-                        if (groupInfoNode.HasClass("resultmatchinfo"))
-                        {
-                            foreach (var infoNode in groupInfoNode.ChildNodes)
-                            {
-                                if (infoNode.HasClass("resultsimilarityinfo"))
-                                {
-                                    var text = infoNode.InnerText.Replace("%", "");
-                                    parsedResponse.Similarity = float.Parse(text);
-                                    continue;
-                                }
-
-                                if (infoNode.HasClass("resultmiscinfo"))
-                                {
-                                    foreach (var misc in infoNode.ChildNodes)
-                                    {
-                                        if(misc.Name == "a")
-                                        {
-                                            var href = misc.GetAttributeValue<string>("href", null);
-
-                                            if (!string.IsNullOrEmpty(href))
-                                            {
-                                                parsedResponse.Url.Add(href.Trim());
-                                            }
-                                            continue;
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-
-                        if (groupInfoNode.HasClass("resultcontent"))
-                        {
-                            foreach (var infoNode in groupInfoNode.ChildNodes)
-                            {
-                                if (infoNode.HasClass("resulttitle"))
-                                {
-                                    const string patternCreator = "Creator:";
-                                    if (infoNode.InnerText.StartsWith(patternCreator))
-                                    {
-                                        parsedResponse.Creator = infoNode.InnerText[patternCreator.Length..];
-                                        continue;
-                                    }
-
-                                    parsedResponse.Title = infoNode.InnerText;
-                                    continue;
-                                }
-
-                                if (infoNode.HasClass("resultcontentcolumn"))
-                                {
-                                    foreach (var contentColumn in infoNode.ChildNodes)
-                                    {
-#warning improve this
-                                        const string patternSource = "Source:";
-                                        if (contentColumn.InnerText.StartsWith(patternSource))
-                                        {
-                                            parsedResponse.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
-                                            continue;
-                                        }
-
-                                        const string patternPixivId = "Pixiv ID:";
-                                        if (contentColumn.InnerText.StartsWith(patternPixivId))
-                                        {
-                                            parsedResponse.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
-                                            continue;
-                                        }
-
-                                        const string patterCreator2 = "Member:";
-                                        if (contentColumn.InnerText.StartsWith(patterCreator2))
-                                        {
-                                            parsedResponse.Creator = contentColumn.NextSibling.InnerText;
-                                            continue;
-                                        }
-
-                                        const string patternTweetId = "Tweet ID:";
-                                        if (contentColumn.InnerText.StartsWith(patternTweetId))
-                                        {
-                                            parsedResponse.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
-                                            continue;
-                                        }
-
-                                        const string patterCreator3 = "Twitter:";
-                                        if (contentColumn.InnerText.StartsWith(patterCreator3))
-                                        {
-                                            parsedResponse.Creator = contentColumn.NextSibling.InnerText;
-                                            continue;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    list.Add(parsedResponse);
+                    list.Add(result);
                 }
-
             }
 
             return list;
         }
-    }
 
-    public class SaucenaoResponse
-    {
-        public float Similarity { get; set; }
-        public List<string> Url { get; set; } = new List<string>();
-        public string SourceUrl { get; set; }
-        public string Title { get; set; }
-        public string Creator { get; set; }
+
+
+        private static SaucenaoResponse ParseResult(HtmlNode currentResult)
+        {
+            var parsedResponse = new SaucenaoResponse();
+
+            foreach (var groupInfoNode in currentResult.FirstChild.LastChild.ChildNodes)
+            {
+                if (groupInfoNode.HasClass("resultmatchinfo"))
+                {
+                    ParseInfo(parsedResponse, groupInfoNode);
+                    continue;
+                }
+
+                if (groupInfoNode.HasClass("resultcontent"))
+                {
+                    foreach (var infoNode in groupInfoNode.ChildNodes)
+                    {
+                        ParseSource(parsedResponse, infoNode);
+                    }
+                }
+            }
+
+            return parsedResponse;
+        }
+
+        private static void ParseInfo(SaucenaoResponse result, HtmlNode currentNode)
+        {
+            foreach (var infoNode in currentNode.ChildNodes)
+            {
+                if (infoNode.HasClass("resultsimilarityinfo"))
+                {
+                    var text = infoNode.InnerText.Replace("%", "");
+                    result.Similarity = float.Parse(text);
+                    continue;
+                }
+
+                if (infoNode.HasClass("resultmiscinfo"))
+                {
+                    foreach (var misc in infoNode.ChildNodes)
+                    {
+                        if (misc.Name == "a")
+                        {
+                            var href = misc.GetAttributeValue<string>("href", null);
+
+                            if (!string.IsNullOrEmpty(href))
+                            {
+                                result.OtherUrls.Add(href.Trim());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ParseSource(SaucenaoResponse result, HtmlNode currentNode)
+        {
+            if (currentNode.HasClass("resulttitle"))
+            {
+                const string patternCreator = "Creator:";
+                if (currentNode.InnerText.StartsWith(patternCreator))
+                {
+                    result.Creator = currentNode.InnerText[patternCreator.Length..];
+                    return;
+                }
+
+                // booru like sites seems to use that field to put the creator's name
+                // it also doesn't seem to have the title anywhere
+
+                result.Title = currentNode.InnerText;
+                return;
+            }
+
+            if (currentNode.HasClass("resultcontentcolumn"))
+            {
+                foreach (var contentColumn in currentNode.ChildNodes)
+                {
+#warning improve this
+
+                    // ArtStation
+                    if (contentColumn.InnerText.StartsWith("ArtStation Project:"))
+                    {
+                        result.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
+                        continue;
+                    }
+
+                    // ArtStation
+                    if (contentColumn.InnerText.StartsWith("Author:"))
+                    {
+                        result.Creator = contentColumn.NextSibling.InnerText;
+                        continue;
+                    }
+
+                    // Pixiv
+                    if (contentColumn.InnerText.StartsWith("Pixiv ID:"))
+                    {
+                        result.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
+                        continue;
+                    }
+
+                    // Pixiv
+                    if (contentColumn.InnerText.StartsWith("Member:"))
+                    {
+                        result.Creator = contentColumn.NextSibling.InnerText;
+                        continue;
+                    }
+
+                    // Booru
+                    if (contentColumn.InnerText.StartsWith("Source:"))
+                    {
+                        result.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
+                        continue;
+                    }
+
+                    // Booru
+                    if (contentColumn.InnerText.StartsWith("Creator:"))
+                    {
+                        result.Creator = contentColumn.NextSibling.InnerText;
+                        continue;
+                    }
+
+                    // Twitter
+                    if (contentColumn.InnerText.StartsWith("Tweet ID:"))
+                    {
+                        result.SourceUrl = contentColumn.NextSibling.GetAttributeValue<string>("href", null)?.Trim();
+                        continue;
+                    }
+
+                    // Twitter
+                    if (contentColumn.InnerText.StartsWith("Twitter:"))
+                    {
+                        result.Creator = contentColumn.NextSibling.InnerText;
+                        continue;
+                    }
+                }
+            }
+        }
     }
 }
