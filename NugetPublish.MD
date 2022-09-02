@@ -25,11 +25,16 @@ for /d %i in (*) do ( cd "%i" & %command%  & cd .. )
 ```
 
 publish compiles the dll
+
 ```sh
 dotnet publish --configuration release --output ..\Output\ --os any --self-contained false
 ```
 
 dotnet pack creates the nuget package
+
+```sh
+dotnet pack --configuration release  --include-source --output ..\Output\
+```
 
 --include-symbols => debug info
 --include-source => debug info + source code
