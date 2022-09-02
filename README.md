@@ -13,7 +13,7 @@ To build every nuget you have to run the following command on the solution folde
 ```sh
 setlocal enabledelayedexpansion
 
-FOR /d %i IN (*) do ( 
+for /d %i in (*) do ( 
     cd "%i" & 
     dotnet pack --configuration release  --include-source --output ..\Output\  & 
     cd .. 
@@ -51,7 +51,7 @@ The following script will try to upload all the nuget packages contained in the 
 
 ```sh
 setlocal enabledelayedexpansion
-FOR /R %%G IN (*.nupkg) do ( 
+for /R %%G in (*.nupkg) do ( 
     dotnet nuget push --source http://127.0.0.1:8080/v3/index.json --api-key TestApiKey --skip-duplicate "%%G"
 )
 ```
@@ -63,8 +63,8 @@ Remember to change the souce and the api key.
 If you wanna copy the repository into anyplace or you just wanna make sure that you are making a clean build you can execute the following commands which will delete all the compilation caches.
 
 ```sh
-FOR /F "tokens=*" %G IN ('DIR /B /AD /S bin') DO RMDIR /S /Q "%G"
-FOR /F "tokens=*" %G IN ('DIR /B /AD /S obj') DO RMDIR /S /Q "%G"
+for /F "tokens=*" %G in ('DIR /B /AD /S bin') do RMDIR /S /Q "%G"
+for /F "tokens=*" %G in ('DIR /B /AD /S obj') do RMDIR /S /Q "%G"
 ```
 
 ## Static Nuget Server Setup 
