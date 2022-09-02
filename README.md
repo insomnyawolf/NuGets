@@ -11,9 +11,13 @@ If you find any of this stuff usefull i'ld like to know
 To build every nuget you have to run the following command on the solution folder
 
 ```sh
-set "command=dotnet pack --configuration release  --include-source --output ..\Output\"
+setlocal enabledelayedexpansion
 
-for /d %i in (*) do ( cd "%i" & %command%  & cd .. ) 
+FOR /d %i IN (*) do ( 
+    cd "%i" & 
+    dotnet pack --configuration release  --include-source --output ..\Output\  & 
+    cd .. 
+) 
 ```
 
 you can also build a single package by executing the following command in it's project folder
@@ -29,25 +33,39 @@ there's 2 flags that can help with the debugging process if something fails whic
 --include-source => debug info + source code
 ```
 
+I included the second on the previous commands
+
 ## Pushing nuget packages into a nuget server
 
 For single package
 
 ```sh
 dotnet nuget push --source http://127.0.0.1:8080/v3/index.json --api-key TestApiKey --skip-duplicate [package name]
+```
 
+remember to change ``[package name]`` with the name of the package that you wanna upload.
 
 For several packages
 
+The following script will try to upload all the nuget packages contained in the directory
+
 ```sh
 setlocal enabledelayedexpansion
-For /R %%G IN (*.nupkg) do ( 
+FOR /R %%G IN (*.nupkg) do ( 
     dotnet nuget push --source http://127.0.0.1:8080/v3/index.json --api-key TestApiKey --skip-duplicate "%%G"
 )
 ```
 
 Remember to change the souce and the api key.
 
+## Cleanup
+
+If you wanna copy the repository into anyplace or you just wanna make sure that you are making a clean build you can execute the following commands which will delete all the compilation caches.
+
+```sh
+FOR /F "tokens=*" %G IN ('DIR /B /AD /S bin') DO RMDIR /S /Q "%G"
+FOR /F "tokens=*" %G IN ('DIR /B /AD /S obj') DO RMDIR /S /Q "%G"
+```
 
 ## Static Nuget Server Setup 
 
