@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace BooruApi.Models
+namespace BooruApi.Models.Gelbooru.PostEndpoint
 {
-    public class Attributes
+    public class ApiResponsePost
     {
 
-        [JsonPropertyName("limit")]
-        public int Limit { get; set; }
+        [JsonPropertyName("@attributes")]
+        public Attributes Attributes { get; set; }
 
-        [JsonPropertyName("offset")]
-        public int Offset { get; set; }
-
-        [JsonPropertyName("count")]
-        public int Count { get; set; }
+        [JsonPropertyName("post")]
+        public IList<Post> Posts { get; set; } = Array.Empty<Post>();
     }
 
     public partial class Post
@@ -106,62 +103,5 @@ namespace BooruApi.Models
 
         [JsonPropertyName("has_children")]
         public string HasChildren { get; set; }
-    }
-
-    public class ApiResponsePost
-    {
-
-        [JsonPropertyName("@attributes")]
-        public Attributes Attributes { get; set; }
-
-        [JsonPropertyName("post")]
-        public IList<Post> Posts { get; set; } = Array.Empty<Post>();
-    }
-
-    public class ApiResponseTag
-    {
-        [JsonPropertyName("@attributes")]
-        public Attributes Attributes { get; set; }
-
-        [JsonPropertyName("tag")]
-        public List<Tag> Tag { get; set; }
-    }
-
-    public class Tag
-    {
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
-
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
-
-        [JsonPropertyName("count")]
-        public int Count { get; set; }
-
-        [JsonPropertyName("type")]
-        public int Type { get; set; }
-
-        [JsonPropertyName("ambiguous")]
-        public int Ambiguous { get; set; }
-    }
-
-
-    public class AutoCompleteResponse
-    {
-
-        [JsonPropertyName("type")]
-        public string Type { get; set; }
-
-        [JsonPropertyName("label")]
-        public string Label { get; set; }
-
-        [JsonPropertyName("value")]
-        public string Value { get; set; }
-
-        [JsonPropertyName("post_count")]
-        public string PostCount { get; set; }
-
-        [JsonPropertyName("category")]
-        public string Category { get; set; }
     }
 }

@@ -10,7 +10,9 @@ After build Directory.Builds.targets
 		
 		<Authors>insomnyawolf</Authors>
 		<RepositoryUrl>https://github.com/insomnyawolf/NuGets</RepositoryUrl>
-		<IntermediateOutputPath>..\Output\obj\</IntermediateOutputPath>
+		
+		<!-- Don't use this, breaks things -->
+		<!--<IntermediateOutputPath>..\Output\obj\</IntermediateOutputPath>-->
 		
 		<CompleteName>$(Authors).$(AssemblyName)</CompleteName>
 

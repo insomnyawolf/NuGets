@@ -1,30 +1,33 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
-namespace Extensions.CliArgumentBuilder
+namespace CliArgumentBuilder
 {
-    public abstract class ExtensionsCliArgumentBuilder
+    public abstract class CommandLineArgumentBuilder
     {
         public Dictionary<string, string?> Arguments { get; } = new Dictionary<string, string?>();
 
-        public virtual void AddEscaped(string key)
+        public virtual void Add(string key)
         {
             Arguments.Add(key, null);
         }
 
         // Only the value is escaped
-        public virtual void AddEscaped(string key, string value)
+        public virtual void AddWithValueEscaped(string key, object value)
         {
             Arguments.Add(key, $@"""{value}""");
         }
 
-        // Only the value is escaped
-        public virtual void AddEscaped(string key, object value)
+        public virtual void AddWithValueRaw(string key, object value)
         {
-            Arguments.Add(key, $@"""{value}""");
+            Arguments.Add(key, value.ToString());
         }
 
-        public override string ToString()
+        public virtual void Remove(string key)
+        {
+            Arguments.Remove(key);
+        }
+
+        public virtual string GetCommandLineArguments()
         {
             var sb = new StringBuilder();
 
@@ -41,6 +44,11 @@ namespace Extensions.CliArgumentBuilder
             }
 
             return sb.ToString();
+        }
+
+        public override string ToString()
+        {
+            return GetCommandLineArguments();   
         }
     }
 }

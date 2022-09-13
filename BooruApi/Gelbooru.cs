@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 
 namespace BooruApi
 {
@@ -18,12 +17,12 @@ namespace BooruApi
 
         public override string AutoComplete => BaseUrl + "?page=autocomplete2&type=tag_query&term=";
 
-        public GelbooruApi(HttpClient? HttpClient = null) : base (HttpClient) { }
+        public GelbooruApi(HttpClient? HttpClient = null) : base(HttpClient) { }
     }
 
     public class GelbooruPostQueryHelper : PostRequestHelper
     {
-        new public virtual IEnumerable<RatingGelbooru> Rating { get; set; }
+        new public virtual RatingGelbooru? Rating { get; set; }
 
         public override string ToString()
         {
@@ -31,7 +30,7 @@ namespace BooruApi
 
             if (Rating != null)
             {
-                query += string.Join(string.Empty, Rating);
+                query += Rating;
             }
 
             return query;
@@ -45,28 +44,25 @@ namespace BooruApi
 
         public override string ToString()
         {
-            var rating = SearchType switch
+            switch (PostRating)
             {
-                SearchType.Include => "+",
-                SearchType.Exclude => "-",
-            };
-
-            rating += "rating:";
-
-            rating += PostRating switch
-            {
-                GelbooruPostRating.General => "general",
-                GelbooruPostRating.Sensitive => "sensitive",
-                GelbooruPostRating.Questionable => "questionable",
-                GelbooruPostRating.Explicit => "explicit",
-            };
-
-            return rating;
+                case GelbooruPostRating.Explicit:
+                    return "+rating:explicit";
+                case GelbooruPostRating.Questionable:
+                    return "+rating:questionable";
+                case GelbooruPostRating.Sensitive:
+                    return "+rating:sensitive";
+                case GelbooruPostRating.General:
+                    return "+rating:general";
+                default:
+                    return "";
+            }
         }
     }
 
     public enum GelbooruPostRating
     {
+        Any,
         General,
         Sensitive,
         Questionable,

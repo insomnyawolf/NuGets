@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
+using CliArgumentBuilder;
 using Extensions;
-using Extensions.CliArgumentBuilder;
 using Microsoft.Data.Sqlite;
 using OsuApiHelper;
 using OsuParsers.Decoders;
 
 namespace OsuDanserHelper
 {
-    public class DanserHelper : ExtensionsCliArgumentBuilder//, IDisposable
+    public class DanserHelper : CommandLineArgumentBuilder//, IDisposable
     {
         private static readonly string DbLocation = Path.Combine(AppContext.BaseDirectory, "danser.db");
 
@@ -24,47 +22,47 @@ namespace OsuDanserHelper
             this.OsuApi = OsuApi;
         }
 
-        public void SetArtist(string value) => AddEscaped("-artist", value);
-        public void SetTitle(string value) => AddEscaped("-title", value);
-        public void SetDifficulty(string value) => AddEscaped("-difficulty", value);
-        public void SetCreator(string value) => AddEscaped("-creator", value);
+        public void SetArtist(string value) => AddWithValueEscaped("-artist", value);
+        public void SetTitle(string value) => AddWithValueEscaped("-title", value);
+        public void SetDifficulty(string value) => AddWithValueEscaped("-difficulty", value);
+        public void SetCreator(string value) => AddWithValueEscaped("-creator", value);
         public void SetMD5(string value)
         {
             MapMD5 = value;
-            AddEscaped("-md5", value);
+            AddWithValueEscaped("-md5", value);
         }
-        public void SetBeatmapID(int value) => AddEscaped("-id", value);
-        public void SetCursors(int value) => AddEscaped("-cursors", value);
-        public void SetTagCount(int value) => AddEscaped("-tag", value);
-        public void SetSpeed(double value) => AddEscaped("-speed", value);
-        public void SetPitch(double value) => AddEscaped("-pitch", value);
+        public void SetBeatmapID(int value) => AddWithValueEscaped("-id", value);
+        public void SetCursors(int value) => AddWithValueEscaped("-cursors", value);
+        public void SetTagCount(int value) => AddWithValueEscaped("-tag", value);
+        public void SetSpeed(double value) => AddWithValueEscaped("-speed", value);
+        public void SetPitch(double value) => AddWithValueEscaped("-pitch", value);
         public void SetSettingsJsonName(string value)
         {
-            AddEscaped("-settings", value);
+            AddWithValueEscaped("-settings", value);
         }
-        public void Debug() => AddEscaped("-debug");
-        public void Play() => AddEscaped("-play");
-        public void Skip() => AddEscaped("-skip");
-        public void SetStartTime(double value) => AddEscaped("-start", value);
-        public void SetEndTime(double value) => AddEscaped("-end", value);
-        public void Knockout() => AddEscaped("-knockout");
-        public void Record() => AddEscaped("-record");
-        public void Record(string value) => AddEscaped("-out", value);
+        public void Debug() => Add("-debug");
+        public void Play() => Add("-play");
+        public void Skip() => Add("-skip");
+        public void SetStartTime(double value) => AddWithValueEscaped("-start", value);
+        public void SetEndTime(double value) => AddWithValueEscaped("-end", value);
+        public void Knockout() => Add("-knockout");
+        public void Record() => Add("-record");
+        public void Record(string value) => AddWithValueEscaped("-out", value);
         public void SetReplayPath(string value)
         {
             ReplayPath = value;
-            AddEscaped("-r", value);
+            AddWithValueEscaped("-r", value);
         }
-        public void SetMods(string value) => AddEscaped("-mods", value);
-        public void SetSkin(string value) => AddEscaped("-skin", value);
-        public void SetCS(double value) => AddEscaped("-cs", value);
-        public void SetAR(double value) => AddEscaped("-ar", value);
-        public void SetOD(double value) => AddEscaped("-od", value);
-        public void SetHP(double value) => AddEscaped("-hp", value);
-        public void NoDatabaseCheck() => AddEscaped("-nodbcheck");
-        public void NoUpdateCheck() => AddEscaped("-noupdatecheck");
-        public void ScreenShootAt(double value) => AddEscaped("-ss", value);
-        public void Quickstart() => AddEscaped("-quickstart");
+        public void SetMods(string value) => AddWithValueEscaped("-mods", value);
+        public void SetSkin(string value) => AddWithValueEscaped("-skin", value);
+        public void SetCS(double value) => AddWithValueEscaped("-cs", value);
+        public void SetAR(double value) => AddWithValueEscaped("-ar", value);
+        public void SetOD(double value) => AddWithValueEscaped("-od", value);
+        public void SetHP(double value) => AddWithValueEscaped("-hp", value);
+        public void NoDatabaseCheck() => Add("-nodbcheck");
+        public void NoUpdateCheck() => Add("-noupdatecheck");
+        public void ScreenShootAt(double value) => AddWithValueEscaped("-ss", value);
+        public void Quickstart() => Add("-quickstart");
 
         public async Task<Danser> Prepare()
         {

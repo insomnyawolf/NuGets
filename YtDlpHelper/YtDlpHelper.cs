@@ -13,7 +13,6 @@ namespace YtDlp
         public event FinishedRecivingMetadata? OnFinishedRecivingMetadata;
 
         private Semaphore SemaphoreGetInfo { get; }
-        private Semaphore SemaphoreDownloadToStream { get; }
 
         private ILogger? Logger { get; }
 
@@ -21,7 +20,6 @@ namespace YtDlp
         {
             this.Logger = Logger;
             SemaphoreGetInfo = new Semaphore(1, 1);
-            SemaphoreDownloadToStream = new Semaphore(1, 1);
         }
 
         public async Task GetInfoEvents(string target)
