@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace BooruApi.Models.Gelbooru
 {
@@ -15,6 +13,16 @@ namespace BooruApi.Models.Gelbooru
 
         [JsonPropertyName("count")]
         public int Count { get; set; }
+
+        public bool PreviousPageAvailable()
+        {
+            return Offset == 0;
+        }
+
+        public bool IsNextPageAvailable()
+        {
+            return Offset + Limit < Count;
+        }
     }
 
     public class AutoCompleteResponse

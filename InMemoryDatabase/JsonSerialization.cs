@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace InMemoryDatabase
@@ -30,37 +30,35 @@ namespace InMemoryDatabase
 
         public override JsonConverter CreateConverter(Type type, JsonSerializerOptions options)
         {
-            if (ConverterCache.ContainsKey(type.GUID))
+            if (ConverterCache.TryGetValue(type.GUID, out var converter))
             {
-                return ConverterCache[type.GUID];
+                return converter;
             }
 
             Type keyType = type.GetGenericArguments()[0];
 
             var temp = typeof(DatabaseEntryConverterInner<>).MakeGenericType(keyType);
 
-#pragma warning disable CS8600 // They are null on propouse
-            var converter = (JsonConverter)Activator.CreateInstance(
-                temp,
-                BindingFlags.Instance | BindingFlags.Public,
-                binder: null,
-                args: Array.Empty<object>(), //new object[] { options },
-                culture: null
-                );
+            converter = (JsonConverter)Activator.CreateInstance(
+               temp,
+               BindingFlags.Instance | BindingFlags.Public,
+               binder: null,
+               args: new object[] { keyType }, //Array.Empty<object>(),
+               culture: null
+               );
 
-#pragma warning restore CS8600
             ConverterCache.Add(type.GUID, converter);
 
             return converter;
         }
 
-        private class DatabaseEntryConverterInner<T> : JsonConverter<DatabaseEntry<T>> where T : class
+        protected class DatabaseEntryConverterInner<T> : JsonConverter<DatabaseEntry<T>> where T : class
         {
-            // Does this even do anything? ;-;
-            private static JsonValue JsonValue;
-            
-            public DatabaseEntryConverterInner(JsonSerializerOptions JsonSerializerOptions)
+            public Type ContentType { get; set; }
+
+            protected DatabaseEntryConverterInner(Type ContentType)
             {
+                this.ContentType = ContentType;
             }
 
             public override DatabaseEntry<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

@@ -1,5 +1,4 @@
-﻿//#define CustomConverter
-//#define OptimizeDefaultConverter
+﻿#define CustomConverter
 using System.Text.Json.Serialization;
 
 namespace InMemoryDatabase
@@ -9,13 +8,9 @@ namespace InMemoryDatabase
 #endif
     public class DatabaseEntry<T> where T : class
     {
-#if OptimizeDefaultConverter
+#if !CustomConverter
         [JsonPropertyName("V")]
 #endif
         public T? Value { get; set; }
-#if OptimizeDefaultConverter
-        [JsonIgnore]
-#endif
-        public bool Marked { get; set; }
     }
 }

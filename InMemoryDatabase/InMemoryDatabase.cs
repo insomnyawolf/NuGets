@@ -12,26 +12,29 @@ using System.Threading.Tasks;
 
 namespace InMemoryDatabase
 {
-#warning THIS PROBABLY ISN'T THREAD SAFE YET
     public class InMemoryDatabase<T> where T : class
     {
-        //private readonly MemoryPool<DatabaseEntry<T>> DatabaseEntryPool = MemoryPool<DatabaseEntry<T>>.Shared;
-        private readonly MemoryPool<T> ResultPool = MemoryPool<T>.Shared;
-
-        private List<DatabaseEntry<T>> Data;
-
-        private Stream? PersistanceStream;
+        public bool IsCompressed { get; }
+        private readonly List<DatabaseEntry<T>> Data;
+        private readonly Stream PersistanceStream;
 
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions()
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
             ReadCommentHandling = JsonCommentHandling.Skip,
             Encoder = JavaScriptEncoder.Default,
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+            IncludeFields = true,
+            IgnoreReadOnlyFields = false,
+            IgnoreReadOnlyProperties = false,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.AllowNamedFloatingPointLiterals,
+            PropertyNameCaseInsensitive = false,
+            UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
         };
 
-        public bool IsCompressed { get; }
 
-        public InMemoryDatabase(string path, bool compressed = false) : this(File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read), compressed)
+        public InMemoryDatabase(string path, bool IsCompressed = false) : this(File.Open(path, mode: FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read), IsCompressed)
         {
             //var fileStreamOptions = new FileStreamOptions
             //{
@@ -43,82 +46,43 @@ namespace InMemoryDatabase
             //};
         }
 
-        
-        public InMemoryDatabase(Stream? PersistanceStream = null, bool compressed = false)
+        public InMemoryDatabase(Stream PersistanceStream = null, bool IsCompressed = false)
         {
-            IsCompressed = compressed;
-            Init(PersistanceStream: PersistanceStream);
-        }
-
-        private void Init(Stream? PersistanceStream)
-        {
+            this.IsCompressed = IsCompressed;
             this.PersistanceStream = PersistanceStream;
 
             if (PersistanceStream != null)
             {
                 // Only try to load if there's a plate to load from
-                Load();
+                Data = Load();
             }
 
-            if (Data is null)
-            {
-                // Then assing a default value
-                Data = ArrayList.Synchronized(new List<DatabaseEntry<T>>()) as List<DatabaseEntry<T>>;
-            }
+            // Then assing a default value if no data is available
+            Data ??= (List<DatabaseEntry<T>>)ArrayList.Synchronized(new List<DatabaseEntry<T>>());
         }
 
         #region CRUD
 
-#warning am i overcomplicating myself by not using a simple List<T> ?
-        public T[] Find(Func<T?, bool> filter)
+        public List<T> Find(Func<T, bool> filter)
         {
             var rowsAffected = 0;
 
-            Parallel.For(0, Data.Count, () => 0, (i, loop, subtotal) =>
+            var result = new List<T>();
+
+            Parallel.For(fromInclusive:0, toExclusive: Data.Count, localInit: () => 0, body: (i, loop, subtotal) =>
             {
                 var currentData = Data[i];
                 if (filter(currentData.Value))
                 {
-                    currentData.Marked = true;
+                    result.Add(currentData.Value);
                     subtotal++;
                 }
                 return subtotal;
-            },
-                (x) => Interlocked.Add(ref rowsAffected, x)
+            } ,localFinally: (x) => Interlocked.Add(ref rowsAffected, x)
             );
 
-            using var memoryOwner = ResultPool.Rent(rowsAffected);
-            var span = memoryOwner.Memory.Span;
-
-            var currentIndex = 0;
-
-            for (int i = 0; i < Data.Count; i++)
-            {
-                var currentData = Data[i];
-                if (currentData.Marked)
-                {
-                    currentData.Marked = false;
-                    span[currentIndex] = currentData.Value;
-                    currentIndex++;
-                }
-            }
-
-            return span/*[..rowsAffected]*/.ToArray();
+            return result;
         }
-
-        //public List<T?> FindSimple(Func<T?, bool> filter)
-        //{
-        //    var results = new List<T?>();
-        //    for (int i = 0; i < Data.Count; i++)
-        //    {
-        //        var currentData = Data[i];
-        //        if (filter(currentData.Value))
-        //        {
-        //            results.Add(currentData.Value);
-        //        }
-        //    }
-        //    return results;
-        //}
 
         public void Add(T item)
         {
@@ -141,7 +105,7 @@ namespace InMemoryDatabase
             }
         }
 
-        public int CountWhere(Func<T?, bool> filter)
+        public int CountWhere(Func<T, bool> filter)
         {
             var rowsAffected = 0;
 
@@ -160,8 +124,7 @@ namespace InMemoryDatabase
             return rowsAffected;
         }
 
-#warning improve the update methods?
-        public int UpdateWhere(Func<T?, bool> filter, Action<T?> updateAction)
+        public int UpdateWhere(Func<T, bool> filter, Action<T> updateAction)
         {
             var rowsAffected = 0;
 
@@ -182,15 +145,14 @@ namespace InMemoryDatabase
             return rowsAffected;
         }
 
-        public int DeleteWhere(Func<T?, bool> filter)
+        public int DeleteWhere(Func<T, bool> filter)
         {
             var rowsAffected = 0;
 
-            var index = Data.Count;
+            // Doing multithreading in this is insanity
 
-            while (Data.Count > 0)
+            for (int index = Data.Count -1 ; index > -1; index--)
             {
-                index--;
                 var currentData = Data[index];
                 if (filter(currentData.Value))
                 {
@@ -217,19 +179,20 @@ namespace InMemoryDatabase
             PersistanceStream.Flush();
         }
 
-        public void Load()
+        public List<DatabaseEntry<T>> Load()
         {
             if (PersistanceStream == null)
             {
                 throw new ArgumentNullException(nameof(PersistanceStream));
             }
 
-            if (PersistanceStream.Length > 0)
+            if (PersistanceStream.Length == 0)
             {
-                Import(PersistanceStream);
+                return null;
             }
+
+            return Import(PersistanceStream);
         }
-#warning PAIN
 
         // This could be better and don't have bullshit in between but im tired
         // Either i have good performance and bullshit
@@ -247,14 +210,13 @@ namespace InMemoryDatabase
         public void Export(Stream stream)
         {
             var targetStream = IsCompressed ? new GZipStream(stream, CompressionMode.Compress) : stream;
-
             JsonSerializer.Serialize(targetStream, Data, JsonSerializerOptions);
         }
 
-        public void Import(Stream stream)
+        public List<DatabaseEntry<T>> Import(Stream stream)
         {
             var targetStream = IsCompressed ? new GZipStream(stream, CompressionMode.Decompress) : stream;
-            Data = ArrayList.Synchronized(JsonSerializer.Deserialize<List<DatabaseEntry<T>>>(targetStream, JsonSerializerOptions)) as List<DatabaseEntry<T>>;
+            return JsonSerializer.Deserialize<List<DatabaseEntry<T>>>(targetStream, JsonSerializerOptions);
         }
     }
     #endregion Persistance
