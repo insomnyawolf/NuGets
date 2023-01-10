@@ -24,7 +24,7 @@ namespace ConfigHelper
                 ReadCommentHandling = JsonCommentHandling.Skip,
                 WriteIndented = true,
                 IncludeFields = true,
-                
+
             };
 
             JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -140,6 +140,12 @@ namespace ConfigHelper
         public void Save()
         {
             Semaphore.Wait();
+
+            if (watcher is not null)
+            {
+                watcher.EnableRaisingEvents = false;
+            }
+
             if (Config is null)
             {
                 Config = new T();
@@ -154,6 +160,11 @@ namespace ConfigHelper
             JsonSerializer.Serialize(FileStream, Config, JsonSerializerOptions);
             FileStream.Flush();
             FileStream.SetLength(FileStream.Position);
+
+            if (watcher is not null)
+            {
+                watcher.EnableRaisingEvents = true;
+            }
 
             Semaphore.Release();
 
