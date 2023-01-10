@@ -69,7 +69,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinFormsApp1", "WinFormsApp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{05F8971D-456A-472C-BA3A-A817393E3D6A}"
 	ProjectSection(SolutionItems) = preProject
-		NugetPublish.MD = NugetPublish.MD
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooruApi", "BooruApi\BooruApi.csproj", "{1C032F0F-55C7-4068-99AC-C7C65F79EC35}"
@@ -81,6 +81,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CliArgumentBuilder", "CliArgumentBuilder\CliArgumentBuilder.csproj", "{95C74E35-EC29-477D-84C0-5322115D31D3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuParsers", "Dependences\OsuParsers\OsuParsers\OsuParsers.csproj", "{85072978-F9CC-48AC-9261-CF5E2EA14FA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastBitmap", "FastBitmap\FastBitmap.csproj", "{821462AC-3930-4421-8D61-C66F6F84EC86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -216,6 +218,10 @@ Global
 		{85072978-F9CC-48AC-9261-CF5E2EA14FA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85072978-F9CC-48AC-9261-CF5E2EA14FA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85072978-F9CC-48AC-9261-CF5E2EA14FA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{821462AC-3930-4421-8D61-C66F6F84EC86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{821462AC-3930-4421-8D61-C66F6F84EC86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{821462AC-3930-4421-8D61-C66F6F84EC86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{821462AC-3930-4421-8D61-C66F6F84EC86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
