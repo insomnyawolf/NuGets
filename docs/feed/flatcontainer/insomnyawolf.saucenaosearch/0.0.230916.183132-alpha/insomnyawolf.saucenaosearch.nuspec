@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>insomnyawolf.SaucenaoSearch</id>
+    <version>0.0.230916.183132-alpha</version>
+    <title>insomnyawolf.SaucenaoSearch</title>
+    <authors>insomnyawolf</authors>
+    <projectUrl>https://github.com/insomnyawolf/NuGets</projectUrl>
+    <description>Simple saucenao.com request api library</description>
+    <repository type="git" url="https://github.com/insomnyawolf/NuGets" commit="9969d1f9a13340d504f036cc794e484fc3f6f57c" />
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="HtmlAgilityPack" version="1.11.46" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

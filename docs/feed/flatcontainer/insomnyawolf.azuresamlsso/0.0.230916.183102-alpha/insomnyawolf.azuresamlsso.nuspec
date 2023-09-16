@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>insomnyawolf.AzureSamlSSO</id>
+    <version>0.0.230916.183102-alpha</version>
+    <title>insomnyawolf.AzureSamlSSO</title>
+    <authors>insomnyawolf</authors>
+    <projectUrl>https://github.com/insomnyawolf/NuGets</projectUrl>
+    <description>Package Description</description>
+    <repository type="git" url="https://github.com/insomnyawolf/NuGets" commit="9969d1f9a13340d504f036cc794e484fc3f6f57c" />
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="System.Security.Cryptography.Xml" version="8.0.0-preview.3.23174.8" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

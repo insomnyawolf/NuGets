@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>insomnyawolf.CsvToObjects</id>
+    <version>0.0.230916.183109-alpha</version>
+    <title>insomnyawolf.CsvToObjects</title>
+    <authors>insomnyawolf</authors>
+    <projectUrl>https://github.com/insomnyawolf/NuGets</projectUrl>
+    <description>Package Description</description>
+    <repository type="git" url="https://github.com/insomnyawolf/NuGets" commit="9969d1f9a13340d504f036cc794e484fc3f6f57c" />
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="insomnyawolf.Extensions" version="0.0.230224.11256" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
