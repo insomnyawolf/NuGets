@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>insomnyawolf.BasicIrcClient</id>
+    <version>0.0.230916.191032-alpha</version>
+    <title>insomnyawolf.BasicIrcClient</title>
+    <authors>insomnyawolf</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="file">LICENSE.md</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <projectUrl>https://github.com/insomnyawolf/NuGets</projectUrl>
+    <description>Very simple irc client library based on events</description>
+    <repository type="git" url="https://github.com/insomnyawolf/NuGets" commit="7d8322f5150ce25f514012dd0af5421bb89102c1" />
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.0-preview.3.23174.8" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

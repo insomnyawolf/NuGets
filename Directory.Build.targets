@@ -4,18 +4,9 @@ Before build Directory.Build.props
 After build Directory.Builds.targets
 -->
 
-<Project>
+<Project>	
 	<PropertyGroup>
-		<Deterministic>true</Deterministic>
-		
-		<Authors>insomnyawolf</Authors>
-		<RepositoryUrl>https://github.com/insomnyawolf/NuGets</RepositoryUrl>
-		
-		<!-- Don't use this, breaks things -->
-		<!--<IntermediateOutputPath>..\Output\obj\</IntermediateOutputPath>-->
-		
 		<CompleteName>$(Authors).$(AssemblyName)</CompleteName>
-
 		<Title>$(CompleteName)</Title>
 		<PackageId>$(CompleteName)</PackageId>
 		<PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>

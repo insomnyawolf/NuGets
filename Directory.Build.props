@@ -5,8 +5,28 @@ After build Directory.Builds.targets
 -->
 
 <Project>
+	<ItemGroup>
+		<None Include="../LICENSE.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+	
 	<PropertyGroup>
 		<MajorVersion>0</MajorVersion>
 		<MinorVersion>0</MinorVersion>
+
+		<Deterministic>true</Deterministic>
+
+		<Authors>insomnyawolf</Authors>
+		<RepositoryUrl>https://github.com/insomnyawolf/NuGets</RepositoryUrl>
+
+		<!-- Don't use this, breaks things -->
+		<!--<IntermediateOutputPath>..\Output\obj\</IntermediateOutputPath>-->
+
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<IncludeSymbols>True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 </Project>

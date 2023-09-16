@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>insomnyawolf.MathHelpers</id>
+    <version>0.0.230916.191038-alpha</version>
+    <title>insomnyawolf.MathHelpers</title>
+    <authors>insomnyawolf</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="file">LICENSE.md</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <projectUrl>https://github.com/insomnyawolf/NuGets</projectUrl>
+    <description>Package Description</description>
+    <repository type="git" url="https://github.com/insomnyawolf/NuGets" commit="7d8322f5150ce25f514012dd0af5421bb89102c1" />
+    <dependencies>
+      <group targetFramework="net6.0" />
+    </dependencies>
+  </metadata>
+</package>
