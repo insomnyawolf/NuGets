@@ -29,7 +29,8 @@ After build Directory.Builds.targets
 			<MinorVersion>0</MinorVersion>
 			-->
 			<PatchVersion>$([System.DateTime]::UtcNow.ToString("yyMMdd"))</PatchVersion>
-			<BuildVersion  Condition="'$(DesignTimeBuild)' != 'true' OR '$(BuildingProject)' == 'true'">$([System.DateTime]::UtcNow.ToString("HHmmss"))</BuildVersion>
+			<!--<BuildVersion  Condition="'$(DesignTimeBuild)' != 'true' OR '$(BuildingProject)' == 'true'">$([System.DateTime]::UtcNow.ToString("HHmmss"))</BuildVersion>-->
+			<BuildVersion>$([System.DateTime]::UtcNow.ToString("HHmmss"))-alpha</BuildVersion>
 			<PackageVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion).$(BuildVersion)</PackageVersion>
 		</PropertyGroup>
 	</Target>
