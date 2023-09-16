@@ -60,30 +60,13 @@ Create a file called ``nuget.config`` in the folder where the solution is with t
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
-    <config>
-        <add key="dependencyVersion" value="Highest" />
-    </config>
-
-    <packageRestore>
-        <!-- Allow NuGet to download missing packages -->
-        <add key="enabled" value="True" />
-
-        <!-- Automatically check for missing packages during build in Visual Studio -->
-        <add key="automatic" value="True" />
-    </packageRestore>
-
-    <packageSources>
-        <add key="insomnyawolf's nuggets" value="https://insomnyawolf.github.io/NuGets/feed/index.json" />
-        <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
-        
-        <!-- this one is for development -->
-        <!-- <add key="local packages" value="C:\Users\[Username]\source\repos\insomnyawolf nugets\docs\NugetBuilds" /> -->
-    </packageSources>
-
-    <activePackageSource>
-        <!-- All non-disabled sources are active -->
-        <add key="All" value="(Aggregate source)" />
-    </activePackageSource>
+	<packageSources>
+		<add key="insomnyawolf nugets" value="https://insomnyawolf.github.io/NuGets/feed/index.json" />
+	</packageSources>
+	<activePackageSource>
+		<!-- All non-disabled sources are active -->
+		<add key="All" value="(Aggregate source)" />
+	</activePackageSource>
 </configuration>
 ```
 
