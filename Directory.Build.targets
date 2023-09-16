@@ -24,7 +24,7 @@ After build Directory.Builds.targets
 	<!--you are a fucking genious https://github.com/dotnet/project-system/issues/1457#issuecomment-893677846-->
 	<Target Name="SetVersion" BeforeTargets="Build">
 		<PropertyGroup>
-			<!-- on build.props so they can be overriden per-projects
+			<!-- on build.props so they can be overriden per-projects but not enforced
 			<MajorVersion>0</MajorVersion>
 			<MinorVersion>0</MinorVersion>
 			-->

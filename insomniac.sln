@@ -49,8 +49,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BA6363E3-1041-4C3C-8DDC-522F1EECF90E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitHelper", "GitHelper\GitHelper.csproj", "{0AFC41FF-40F6-4F9E-A5B7-E34241248213}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LowLevelInputHooks", "LowLevelInputHooks\LowLevelInputHooks.csproj", "{809E3C31-A556-4E1A-A051-BB330A38B94F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuDanserHelper", "OsuDanserHelper\OsuDanserHelper.csproj", "{8A72003E-1CE0-4531-B2AF-82C92DEBD83E}"
@@ -69,6 +67,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinFormsApp1", "WinFormsApp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{05F8971D-456A-472C-BA3A-A817393E3D6A}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE.md = LICENSE.md
+		nuget.config = nuget.config
+		publish-all.cmd = publish-all.cmd
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -82,7 +84,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CliArgumentBuilder", "CliAr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuParsers", "Dependences\OsuParsers\OsuParsers\OsuParsers.csproj", "{85072978-F9CC-48AC-9261-CF5E2EA14FA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastBitmap", "FastBitmap\FastBitmap.csproj", "{821462AC-3930-4421-8D61-C66F6F84EC86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastBitmap", "FastBitmap\FastBitmap.csproj", "{821462AC-3930-4421-8D61-C66F6F84EC86}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GithubHelper", "GithubHelper\GithubHelper.csproj", "{80EAEB86-DC3B-4340-BE5A-D1046A8C8D29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MambaManager", "MambaManager\MambaManager.csproj", "{D11C0E9B-741A-4CE7-9886-ABAA3CC5FA4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -166,10 +172,6 @@ Global
 		{89949E66-C6F9-4DB8-9081-D2E50BC1E57F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89949E66-C6F9-4DB8-9081-D2E50BC1E57F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89949E66-C6F9-4DB8-9081-D2E50BC1E57F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0AFC41FF-40F6-4F9E-A5B7-E34241248213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0AFC41FF-40F6-4F9E-A5B7-E34241248213}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0AFC41FF-40F6-4F9E-A5B7-E34241248213}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0AFC41FF-40F6-4F9E-A5B7-E34241248213}.Release|Any CPU.Build.0 = Release|Any CPU
 		{809E3C31-A556-4E1A-A051-BB330A38B94F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{809E3C31-A556-4E1A-A051-BB330A38B94F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{809E3C31-A556-4E1A-A051-BB330A38B94F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -222,6 +224,14 @@ Global
 		{821462AC-3930-4421-8D61-C66F6F84EC86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{821462AC-3930-4421-8D61-C66F6F84EC86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{821462AC-3930-4421-8D61-C66F6F84EC86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80EAEB86-DC3B-4340-BE5A-D1046A8C8D29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80EAEB86-DC3B-4340-BE5A-D1046A8C8D29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80EAEB86-DC3B-4340-BE5A-D1046A8C8D29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80EAEB86-DC3B-4340-BE5A-D1046A8C8D29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D11C0E9B-741A-4CE7-9886-ABAA3CC5FA4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D11C0E9B-741A-4CE7-9886-ABAA3CC5FA4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D11C0E9B-741A-4CE7-9886-ABAA3CC5FA4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D11C0E9B-741A-4CE7-9886-ABAA3CC5FA4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

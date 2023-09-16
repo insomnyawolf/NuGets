@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta16" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.1" />
+    <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta19" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>

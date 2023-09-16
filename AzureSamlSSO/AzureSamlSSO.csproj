@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Security.Cryptography.Xml" Version="7.0.0-preview.7.22375.6" />
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0-preview.3.23174.8" />
 	</ItemGroup>
 
 </Project>

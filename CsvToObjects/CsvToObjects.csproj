@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Extensions\Extensions.csproj" />
+	  <PackageReference Include="insomnyawolf.Extensions" Version="0.0.230224.11256" />
 	</ItemGroup>
 
 </Project>

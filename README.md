@@ -14,8 +14,8 @@ To build every nuget you have to run the following command on the solution folde
 setlocal enabledelayedexpansion
 
 for /d %i in (*) do ( 
-    cd "%i" & 
-    dotnet pack --configuration release  --include-source --output ..\Output\  & 
+    cd "%i" 
+    dotnet pack --configuration release --include-source --output ..\NugetBuilds\
     cd .. 
 ) 
 ```
@@ -23,7 +23,7 @@ for /d %i in (*) do (
 you can also build a single package by executing the following command in it's project folder
 
 ```sh
-dotnet pack --configuration release  --include-source --output ..\Output\
+dotnet pack --configuration release  --include-source --output ..\NugetBuilds\
 ```
 
 there's 2 flags that can help with the debugging process if something fails which are

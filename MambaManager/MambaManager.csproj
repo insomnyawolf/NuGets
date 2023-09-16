@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="pythonnet" Version="3.1.0-preview2023-07-03" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GithubHelper\GithubHelper.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="insomnyawolf.OsuApiHelper" Version="0.0.220901.214551" />
   </ItemGroup>
 
