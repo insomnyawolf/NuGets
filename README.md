@@ -69,8 +69,6 @@ for /F "tokens=*" %G in ('DIR /B /AD /S obj') do RMDIR /S /Q "%G"
 
 ## Static Nuget Server Setup 
 
-Sadly last time i checked wasn't working at least using github as host for the webpage, i'll need to check it at some point
-
 [https://insomnyawolf.github.io/NuGets/#setup-your-feed](https://insomnyawolf.github.io/NuGets/#setup-your-feed)
 
 ## Final notes
