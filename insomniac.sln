@@ -90,6 +90,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GithubHelper", "GithubHelpe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MambaManager", "MambaManager\MambaManager.csproj", "{D11C0E9B-741A-4CE7-9886-ABAA3CC5FA4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGeneratorExtensions", "SourceGeneratorExtensions\SourceGeneratorExtensions.csproj", "{B6D776BC-635C-4835-9F19-C7AB30658D18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -232,6 +234,10 @@ Global
 		{D11C0E9B-741A-4CE7-9886-ABAA3CC5FA4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D11C0E9B-741A-4CE7-9886-ABAA3CC5FA4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D11C0E9B-741A-4CE7-9886-ABAA3CC5FA4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6D776BC-635C-4835-9F19-C7AB30658D18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6D776BC-635C-4835-9F19-C7AB30658D18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6D776BC-635C-4835-9F19-C7AB30658D18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6D776BC-635C-4835-9F19-C7AB30658D18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
